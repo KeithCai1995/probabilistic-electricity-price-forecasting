@@ -1,8 +1,8 @@
 [project]
 name = "energy-forecasting-under-regime-shift"
-version = "1.0.0"
+version = "1.0.2"
 description = "Probabilistic electricity-price forecasting with conformal calibration under regime shift"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
   "numpy>=2.0",
   "pandas>=2.0",
