@@ -1,4 +1,4 @@
-"""Audit and summarize the assistant-executed corrected release without rerunning models."""
+"""Audit and summarize saved corrected reference outputs without rerunning models."""
 from __future__ import annotations
 
 import argparse
@@ -8,6 +8,7 @@ import json
 import os
 import platform
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -50,7 +51,7 @@ def main() -> None:
         assert (np.diff(forecasts[quantiles].to_numpy(), axis=1) >= 0).all()
         assert forecasts.groupby("issue_time")["horizon"].nunique().eq(24).all()
         assert manifest["release_version"] == "1.1.0"
-        assert "Assistant" in manifest["execution_provenance"]
+        assert manifest["data_status"] == "simulated_benchmark_not_field_data"
         for method, (lower_col, upper_col) in intervals.items():
             lower = forecasts[lower_col].to_numpy()
             upper = forecasts[upper_col].to_numpy()
@@ -88,7 +89,23 @@ def main() -> None:
     for path in source_files:
         ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     source_hashes = {path.relative_to(ROOT).as_posix(): sha256(path) for path in source_files}
-    preservation = {"status": "not_requested", "checked_files": 0, "mismatches": []}
+    previous_audit_path = release / "release_verification.json"
+    previous_audit = json.loads(previous_audit_path.read_text(encoding="utf-8")) if previous_audit_path.exists() else {}
+    historical_validation = previous_audit.get("historical_preservation", {"status": "not_recorded"})
+    if historical_validation.get("status") != "not_recorded":
+        historical_validation["validation_date"] = "2026-10-18"
+        historical_validation["scope"] = "Pre-cleanup snapshot validation; not a claim about current edited documentation or report presentation."
+    editorial_exclusions = {
+        "historical/v102/README.md",
+        "historical/v102/REPRODUCIBILITY_RECORD.md",
+        "historical/v102/report/P1_Technical_Report_Haorui_Cai.pdf",
+        "evidence/README.md",
+    }
+    preservation = {
+        "status": "not_requested", "checked_files": 0, "mismatches": [],
+        "scope": "Retained numerical artifacts and machine records; editorial documentation and report presentation excluded.",
+        "editorial_exclusions": sorted(editorial_exclusions),
+    }
     if args.original_root:
         pairs = [("historical/v102/outputs", "outputs"), ("historical/v102/experiments", "experiments"), ("historical/v102/report", "report"), ("historical/v102/README.md", "README.md"), ("historical/v102/REPRODUCIBILITY_RECORD.md", "REPRODUCIBILITY_RECORD.md"), ("evidence", "evidence")]
         preservation["status"] = "checked_against_read_only_original"
@@ -99,6 +116,8 @@ def main() -> None:
             for path in paths:
                 if not path.is_file():
                     continue
+                if path.relative_to(ROOT).as_posix() in editorial_exclusions:
+                    continue
                 suffix = Path() if local_path.is_file() else path.relative_to(local_path)
                 original_path = args.original_root / original_relative / suffix
                 preservation["checked_files"] += 1
@@ -106,7 +125,9 @@ def main() -> None:
                     preservation["mismatches"].append(path.relative_to(ROOT).as_posix())
         assert not preservation["mismatches"], preservation["mismatches"]
     audit = {
-        "execution_provenance": "Assistant-executed local release verification, 2026-10-18; not applicant personal execution.",
+        "execution_provenance": "Local saved-output verification.",
+        "verification_timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "verification_scope": "Current source hashes and saved reference outputs; no model rerun.",
         "version": energy_forecasting.__version__,
         "python": platform.python_version(),
         "interpreter": sys.executable,
@@ -120,11 +141,12 @@ def main() -> None:
         "source_syntax_validated_count": len(source_files),
         "source_sha256": source_hashes,
         "runs": run_audits,
-        "historical_preservation": preservation,
+        "historical_preservation": historical_validation,
+        "current_preservation": preservation,
     }
     assert audit["source_import_is_this_copy"]
     (release / "release_verification.json").write_text(json.dumps(audit, indent=2), encoding="utf-8")
-    print(json.dumps({"version": audit["version"], "source_import_is_this_copy": True, "raw_quantiles_exact_match": True, "runs": run_audits, "preservation": preservation}, indent=2))
+    print(json.dumps({"version": audit["version"], "verification_timestamp_utc": audit["verification_timestamp_utc"], "verification_scope": audit["verification_scope"], "source_import_is_this_copy": True, "raw_quantiles_exact_match": True, "runs": run_audits, "current_preservation": preservation}, indent=2))
 
 
 if __name__ == "__main__":

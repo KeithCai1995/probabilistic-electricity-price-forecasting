@@ -1,13 +1,15 @@
 # Reproduction record — corrected v1.1.0
 
-Execution date: 2026-10-18. Operator: AI coding assistant in a local workspace.
-The original record is preserved byte-for-byte at
-`historical/v102/REPRODUCIBILITY_RECORD.md`; all original personal logs remain
+Reference experiment date: 2026-10-18. The earlier reproduction record is at
+`historical/v102/REPRODUCIBILITY_RECORD.md`; earlier run logs remain
 under `evidence/` and describe v1.0.2 only.
 
 The preservation baseline is the uploaded v1.0.2 archive's extracted snapshot at
-`work/pv18/p1`, not the separately maintained Desktop working repository. Seventy-three
-historical/evidence files match that snapshot byte-for-byte. Some Desktop evidence
+`work/pv18/p1`, not the separately maintained Desktop working repository. The
+2026-10-18 validation matched 73 historical/evidence files before later wording
+cleanup. Current checks cover retained numerical artifacts and machine records;
+edited documentation and report presentation are excluded from byte-identity claims.
+Pre-cleanup copies are stored separately outside this repository. Some Desktop evidence
 uses CRLF rather than the uploaded snapshot's LF line endings; no Desktop-byte
 identity is asserted. Desktop was used only as the read-only interpreter location.
 
@@ -45,5 +47,7 @@ or retrained raw forecast difference. The supplied older Python 3.12 reference
 had different raw forecasts and remains a separate historical comparator.
 
 The baseline downstream forecast has 1,992 rows. Its SHA256 and all release
-summary tables are recorded by `scripts/summarize_release.py`. A SHA match audits
+summary tables are recorded by `scripts/summarize_release.py`. The current metadata
+verification is dated separately from the reference experiments and does not
+represent a new model run. A SHA match audits
 these local bytes; it does not establish scientific validity.

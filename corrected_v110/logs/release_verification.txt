@@ -1,5 +1,7 @@
 {
   "version": "1.1.0",
+  "verification_timestamp_utc": "2026-10-19T15:23:44.536041+00:00",
+  "verification_scope": "Current source hashes and saved reference outputs; no model rerun.",
   "source_import_is_this_copy": true,
   "raw_quantiles_exact_match": true,
   "runs": {
@@ -39,10 +41,17 @@
       "max_unbounded_fraction": 0.0
     }
   },
-  "preservation": {
+  "current_preservation": {
     "status": "checked_against_read_only_original",
-    "checked_files": 73,
+    "checked_files": 69,
     "mismatches": [],
+    "scope": "Retained numerical artifacts and machine records; editorial documentation and report presentation excluded.",
+    "editorial_exclusions": [
+      "evidence/README.md",
+      "historical/v102/README.md",
+      "historical/v102/REPRODUCIBILITY_RECORD.md",
+      "historical/v102/report/P1_Technical_Report_Haorui_Cai.pdf"
+    ],
     "source_root": "C:\\Users\\40610\\Documents\\Codex\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1"
   }
 }

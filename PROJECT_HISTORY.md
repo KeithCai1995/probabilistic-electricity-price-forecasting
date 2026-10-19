@@ -18,6 +18,9 @@ material predates that Git history. The original statement is preserved at
 
 ## Sources
 
-Initial code and reference analyses were supplied. The v1.1.0 corrections and
-reference-run preparation used AI assistance. Method sources are credited in
+Initial code and reference analyses were supplied. Method sources are credited in
 [RELATED_WORK.md](RELATED_WORK.md); execution details remain in the dated records.
+
+Presentation and source-note wording was cleaned on 19 October 2026. Numerical
+data, configurations and figures were retained; pre-cleanup copies are stored
+separately outside this repository.

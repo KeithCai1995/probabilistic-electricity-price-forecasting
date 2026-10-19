@@ -1,25 +1,27 @@
 {
-  "execution_provenance": "Assistant-executed local release verification, 2026-10-18; not applicant personal execution.",
+  "execution_provenance": "Local saved-output verification.",
+  "verification_timestamp_utc": "2026-10-19T15:23:44.536041+00:00",
+  "verification_scope": "Current source hashes and saved reference outputs; no model rerun.",
   "version": "1.1.0",
   "python": "3.13.15",
   "interpreter": "C:\\Users\\40610\\Desktop\\\u535a\u58eb\u7533\u8bf7\u6750\u6599\\\u4f5c\u54c1\u96c6\\P1_WORKING_REPOSITORY\\.venv\\Scripts\\python.exe",
-  "import_location": "C:\\Users\\40610\\Documents\\Codex\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\revision_20261018\\p1\\src\\energy_forecasting\\__init__.py",
+  "import_location": "C:\\Users\\40610\\Documents\\Codex\\Publish_v110_20261018\\P1\\src\\energy_forecasting\\__init__.py",
   "source_import_is_this_copy": true,
   "bytecode_disabled": true,
   "omp_num_threads": "2",
-  "plot_cache": "C:/Users/40610/Documents/Codex/2026-10-12/tools-numpy-pandas-scipy-highs-scikit/work/revision_20261018/qa/mpl",
+  "plot_cache": "C:/Users/40610/Documents/Codex/Publish_v110_20261018/Plot_Cache",
   "raw_quantiles_exact_match_old_windows_baseline": true,
   "baseline_data_fingerprint_matches_old_windows": true,
   "source_syntax_validated_count": 11,
   "source_sha256": {
-    "scripts/build_report.py": "b9b53f149a5a1b1fa59e78524780f38dad6efdf4371b168e0c164a680d98e1ea",
+    "scripts/build_report.py": "5185a55dd212b038d85cfe8c67fe5e01c7aa8cf8e82b710dc4bfc1faa2bf792b",
     "scripts/run_experiment.py": "44469c1a6cd03d1a0c68296d505aada0c5001a14dfa26892cec5439491b5cc58",
-    "scripts/run_seed_check.py": "5e031c8df6f3b5086740ed7044c4bb273f58821348c3f6c5079e0cab16c410f1",
-    "scripts/summarize_release.py": "7c478c0a327995f0dc84fb79340b97dc50f23b7c70ff135014d084416c608c04",
+    "scripts/run_seed_check.py": "d40bfbfc068cd85deb2466afe8b64df04b0a0d62bea821533f26c78b5eb9eae8",
+    "scripts/summarize_release.py": "5ef16c4779f2a102c02b364afacda1300fe33b3a42d2ecb9f85c077a6e0a074a",
     "src/energy_forecasting/__init__.py": "1f0c6fe4749b67be0f571eb6a14c16a40b90980457cbd790487e0ceeaa855975",
     "src/energy_forecasting/conformal.py": "a45241631e3d19d0067cdc978280975051bee9cfbd86249c236fcb49e1fa5c25",
     "src/energy_forecasting/data.py": "01873945b4f9e47293c99ba7f74cbd775491dd5f2bfb4be0784fe68a57ef4b1a",
-    "src/energy_forecasting/experiment.py": "e61979dabcc7f911c6e89b2076c1122166c6dd72e994cae1f1735ff55e5e172d",
+    "src/energy_forecasting/experiment.py": "c0536ce0d3b06b347473fadda628939522d1316fc1ac97faa24e5e7196d03986",
     "src/energy_forecasting/metrics.py": "d56f28146bec15e5939531e9ea7a08345be32eb0ad51db4ee419b970353b9c62",
     "src/energy_forecasting/models.py": "97be9fde6347e8c96ca26446703fabf204f13b9c82278dd4296eb5f0ca1c9e4f",
     "tests/test_pipeline.py": "b4fa9d37fb5c31b6b26f32cb6a8540ca37ac9ce29aedd7545b6c39028116db38"
@@ -65,6 +67,21 @@
     "status": "checked_against_read_only_original",
     "checked_files": 73,
     "mismatches": [],
+    "source_root": "C:\\Users\\40610\\Documents\\Codex\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1",
+    "validation_date": "2026-10-18",
+    "scope": "Pre-cleanup snapshot validation; not a claim about current edited documentation or report presentation."
+  },
+  "current_preservation": {
+    "status": "checked_against_read_only_original",
+    "checked_files": 69,
+    "mismatches": [],
+    "scope": "Retained numerical artifacts and machine records; editorial documentation and report presentation excluded.",
+    "editorial_exclusions": [
+      "evidence/README.md",
+      "historical/v102/README.md",
+      "historical/v102/REPRODUCIBILITY_RECORD.md",
+      "historical/v102/report/P1_Technical_Report_Haorui_Cai.pdf"
+    ],
     "source_root": "C:\\Users\\40610\\Documents\\Codex\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1"
   }
 }

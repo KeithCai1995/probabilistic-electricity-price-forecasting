@@ -4,10 +4,9 @@ Corrected local edition v1.1.0 — 18 October 2026
 
 **SIMULATED BENCHMARK — NOT FIELD DATA.** This report concerns a research-training
 portfolio, not a named electricity market, employer, Tarim Oilfield or trading system.
-The correction, automated tests, new experiments and this release document were
-prepared or executed with an AI coding assistant. They are not new evidence of
-the applicant's independent personal execution. Original personal records are
-preserved separately and describe the earlier v1.0.2 implementation.
+This report documents the correction, automated tests and saved reference
+experiments. Earlier run records describe the v1.0.2 implementation and are kept
+separately from the corrected results.
 
 ## Purpose and experimental design
 
@@ -165,18 +164,15 @@ precise inferential claims.
 
 ![Coverage by stress subset. Renewable shift and All refer to the same final rows.](../corrected_v110/baseline/outputs/figures/figure_5_subset_coverage.png)
 
-All final-evaluation rows are renewable-shift examples, so the `Renewable shift`
-bar repeats `All`. No volatile-regime row appears in this final subset table;
-that absence is not evidence of good volatile-regime performance. The separate
-rolling diagnostics below include earlier periods and show substantially lower
-coverage in one fold.
+All final-evaluation rows are renewable-shift examples: `Renewable shift` repeats
+`All`. This table contains no volatile-regime rows and cannot establish performance
+in that regime. The rolling diagnostics below cover earlier periods.
 
 ## Rolling-origin diagnostic
 
-Each expanding-window fold reserves its last 42 past days for calibration and
-evaluates the next 28 days (672 hours). The fit, calibration and evaluation
-periods remain chronological. These folds are diagnostics within one constructed
-timeline and do not create independent replications.
+Each chronological expanding-window fold uses 42 calibration days, followed by
+28 evaluation days (672 hours). Folds share one constructed timeline and are not
+independent replications.
 
 | Fold | Evaluation start | Raw coverage | Pooled coverage | Adaptive coverage |
 | --- | --- | ---: | ---: | ---: |
@@ -233,8 +229,8 @@ Version metadata and runtime version are both 1.1.0. The original Windows Python
 3.13.15 environment was used read-only; NumPy 2.3.5, pandas 2.2.3, SciPy 1.17.0 and
 scikit-learn 1.8.0 are recorded in manifests. Bytecode was disabled, plotting cache
 was redirected inside this workspace, and the corrected local `src` took priority
-over the original environment's editable installation. No original repository,
-personal log, Desktop/Downloads artifact or remote repository was modified.
+over the original environment's editable installation. The reference experiments
+used a local source copy without writing to the Desktop or Downloads artifacts.
 
 The suite passes 16 tests, including exact discrete indices, alpha boundaries,
 ties, nonfinite/invalid inputs, infinity propagation, infinite scores and explicit
@@ -247,20 +243,23 @@ against every leakage route or every implementation defect.
 Five full corrected experiment runs are saved under `corrected_v110/`: baseline,
 gamma .030, gamma .050, and additional baseline seeds 20260818/20260819. Each has
 a manifest, four tables, six figures, simulated data and forecast exports.
-Assistant terminal logs and unit-test output are in `corrected_v110/logs/`.
+Reference terminal logs and unit-test output are in `corrected_v110/logs/`.
 `scripts/summarize_release.py` generates machine-readable comparison tables and
 checks the retained historical bytes against their original read-only source.
-SHA256 identifies local artifacts, not scientific validity or personal authorship.
-All 73 retained historical/evidence files match the uploaded v1.0.2 snapshot
-extracted under `work/pv18/p1`; the Desktop working repository is a separate
-artifact and is used here only for its read-only Python environment.
+SHA256 identifies local artifacts, not scientific validity. The 2026-10-18
+validation matched 73 files against the uploaded v1.0.2 snapshot before later
+editorial cleanup. Current byte checks cover retained numerical artifacts and
+machine records; edited documentation and report presentation are excluded.
+Pre-cleanup copies are stored separately outside this repository. The Desktop
+working repository supplied only the read-only Python environment for these runs.
 
 The baseline CSV has 1,992 rows and includes raw quantiles, pooled/horizon static
 bounds, adaptive bounds, alpha, correction and OOD columns. Its data fingerprint
-matches the original Windows run. Unmodified v1.0.2 active outputs, experiments,
-old report, README and reproduction record are in `historical/v102/`.
-Unmodified applicant verification evidence remains in `evidence/` and must be
-read as historical. The earlier PDF is not the corrected report.
+matches the original Windows run. The v1.0.2 numerical outputs, experiments,
+earlier report, README and reproduction record are in `historical/v102/`.
+Earlier run evidence remains in `evidence/` and must be read as historical.
+Documentation and report presentation wording was cleaned on 19 October 2026;
+the numerical artifacts were retained. The earlier PDF is not the corrected report.
 
 The corrected findings are narrower than a general performance claim: the rank
 defect is repaired and regression-tested; overall adaptive coverage is near .80

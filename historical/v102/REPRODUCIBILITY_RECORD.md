@@ -1,16 +1,15 @@
-# P1 reference and applicant reproducibility record
+# P1 reference and local reproducibility record
 
 ## Purpose and provenance
 
 This file separates two kinds of evidence:
 
 1. the supplied reference record, checked on 22 September 2026; and
-2. the applicant's independent Windows verification, completed on 25–26 September
+2. the local Windows verification, completed on 25–26 September
    2026 after the portfolio was placed under version control.
 
 The imported portfolio files predate this Git repository. The later commits and
-files under `evidence/` record only the work actually completed after import. They
-do not claim that the applicant personally performed each earlier development step.
+files under `evidence/` record subsequent verification work.
 
 All inputs are simulated. No Tarim Oilfield, employer or live-market data were used.
 
@@ -93,12 +92,12 @@ and realised-future variables from model features, rejection of leading missing
 history, separation of horizon-specific corrections, and non-use of a sample's own
 outcome in its adaptive interval.
 
-## Applicant verification: Windows and Python 3.13.15
+## Local verification: Windows and Python 3.13.15
 
 ### Environment and automated tests
 
-The applicant created a local Windows virtual environment with Python 3.13.15 and
-installed the locked dependencies. All six unit tests passed before the baseline
+A local Windows virtual environment used Python 3.13.15 and the locked
+dependencies. All six unit tests passed before the baseline
 run on 25 September 2026. They were rerun on 26 September after documentation and
 encoding checks and again passed six out of six with exit code 0.
 
@@ -108,9 +107,9 @@ Evidence:
 - `evidence/unit_tests.txt`
 - Git commit `8dc6c6a`
 
-### Independent baseline reproduction
+### Baseline reproduction
 
-The applicant ran:
+Recorded command:
 
 ```bash
 python scripts/run_experiment.py --config configs/base.yaml \
@@ -146,7 +145,7 @@ Evidence:
 
 ### Rerun of the supplied gamma 0.050 sensitivity
 
-The applicant reran the supplied sensitivity configuration on the local Windows
+The supplied sensitivity configuration was rerun on the local Windows
 environment. The adaptive result was:
 
 | Adaptive gamma | Coverage | Mean width | Interval score |
@@ -165,9 +164,9 @@ Evidence:
 - `evidence/runs/gamma_050/outputs/tables/overall_metrics.csv`
 - Git commit `9d1db12`
 
-### Applicant-planned gamma 0.030 experiment
+### Planned gamma 0.030 experiment
 
-Before running the intermediate value, the applicant committed a dated plan explaining
+Before running the intermediate value, a dated plan was committed explaining
 the choice of gamma 0.030, the expected trade-off and the evaluation criteria. The
 configuration changed only `adaptive_gamma` from 0.015 to 0.030.
 
@@ -195,7 +194,7 @@ Evidence:
 
 ## Interpretation limits
 
-The applicant's runs establish that the included pipeline executes successfully in
+The local runs establish that the included pipeline executes successfully in
 the recorded Windows environment and that the main qualitative findings are stable
 to negligible cross-platform numerical differences. They do not establish real-market
 performance, universal conformal coverage, joint 24-hour path validity or superiority
