@@ -1,0 +1,6 @@
+                 method  coverage  mean_width  interval_score  unbounded_fraction  finite_only_mean_width  finite_only_interval_score  seasonal_naive_mae  quantile_model_mae  mean_pinball  approx_crps  infinite_interval_count
+          Raw quantiles  0.558735   12.407281       36.378249                 0.0               12.407281                   36.378249           11.810346            6.680861      2.148204     4.754803                        0
+    Static CQR (pooled)  0.914157   28.023044       33.855899                 0.0               28.023044                   33.855899           11.810346            6.680861      2.148204     4.754803                        0
+Static CQR (by horizon)  0.914157   28.605514       34.337700                 0.0               28.605514                   34.337700           11.810346            6.680861      2.148204     4.754803                        0
+           Adaptive CQR  0.817269   22.474140       32.780810                 0.0               22.474140                   32.780810           11.810346            6.680861      2.148204     4.754803                        0
+Artifacts written under: corrected_v110\seed_20260819\outputs

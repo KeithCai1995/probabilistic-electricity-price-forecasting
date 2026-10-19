@@ -1,0 +1,48 @@
+{
+  "version": "1.1.0",
+  "source_import_is_this_copy": true,
+  "raw_quantiles_exact_match": true,
+  "runs": {
+    "baseline": {
+      "forecast_rows": 1992,
+      "forecast_sha256": "6901c84f413ba1375fd8096c3c4910c2346d479a7ff18274832c2d27aba8472b",
+      "data_fingerprint": "6d446b5560d6427574969caeb1b861aaebca30923fefa6093931b7700907e495",
+      "n_figures": 6,
+      "max_unbounded_fraction": 0.0
+    },
+    "gamma_030": {
+      "forecast_rows": 1992,
+      "forecast_sha256": "de2d4494d5f503ffb101c7f2b671ada3d4bff9c3a3fb2af0b5c11aa9266a5e6c",
+      "data_fingerprint": "6d446b5560d6427574969caeb1b861aaebca30923fefa6093931b7700907e495",
+      "n_figures": 6,
+      "max_unbounded_fraction": 0.0
+    },
+    "gamma_050": {
+      "forecast_rows": 1992,
+      "forecast_sha256": "183585684633015372a1ea14e7d3c3e6be2e528ebb8414b00415ad76936dcac0",
+      "data_fingerprint": "6d446b5560d6427574969caeb1b861aaebca30923fefa6093931b7700907e495",
+      "n_figures": 6,
+      "max_unbounded_fraction": 0.0
+    },
+    "seed_20260818": {
+      "forecast_rows": 1992,
+      "forecast_sha256": "c8c8278d3a237f55c2169bedc3a857f0e3d07e7098b0c233da9f7e5bc3615d50",
+      "data_fingerprint": "3fe6da652516df24388d320106c79c7489509327d35133cda9397ba72d7125dc",
+      "n_figures": 6,
+      "max_unbounded_fraction": 0.0
+    },
+    "seed_20260819": {
+      "forecast_rows": 1992,
+      "forecast_sha256": "f2342bdf4832c3a93abbae9f7cbc7f9f8a76a2322e377ab9c984af41799e06cc",
+      "data_fingerprint": "b63a09eda992115ea204aef704b4b55d27d414f1cd55d3b5f0de0479d8a5fd29",
+      "n_figures": 6,
+      "max_unbounded_fraction": 0.0
+    }
+  },
+  "preservation": {
+    "status": "checked_against_read_only_original",
+    "checked_files": 73,
+    "mismatches": [],
+    "source_root": "C:\\Users\\40610\\Documents\\Codex\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1"
+  }
+}

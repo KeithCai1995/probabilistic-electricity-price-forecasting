@@ -12,11 +12,19 @@ def pinball_loss(y: np.ndarray, prediction: np.ndarray, quantile: float) -> floa
 def interval_metrics(y: np.ndarray, lower: np.ndarray, upper: np.ndarray, alpha: float) -> dict[str, float]:
     coverage = np.mean((y >= lower) & (y <= upper))
     width = np.mean(upper - lower)
-    interval_score = (upper - lower) + (2.0 / alpha) * (lower - y) * (y < lower) + (2.0 / alpha) * (y - upper) * (y > upper)
+    # Mask before multiplying so valid infinite conformal intervals score +inf,
+    # rather than producing NaN from the otherwise inactive infinity * 0 term.
+    lower_penalty = np.where(y < lower, lower - y, 0.0)
+    upper_penalty = np.where(y > upper, y - upper, 0.0)
+    interval_score = (upper - lower) + (2.0 / alpha) * (lower_penalty + upper_penalty)
+    finite_mask = np.isfinite(lower) & np.isfinite(upper)
     return {
         "coverage": float(coverage),
         "mean_width": float(width),
         "interval_score": float(np.mean(interval_score)),
+        "unbounded_fraction": float(np.mean(~finite_mask)),
+        "finite_only_mean_width": float(np.mean((upper - lower)[finite_mask])) if finite_mask.any() else float("nan"),
+        "finite_only_interval_score": float(np.mean(interval_score[finite_mask])) if finite_mask.any() else float("nan"),
     }
 
 

@@ -1,0 +1,94 @@
+{
+  "project": "P1_forecasting_under_regime_shift",
+  "release_version": "1.1.0",
+  "execution_provenance": "Assistant-executed corrected local release on 2026-10-18; not applicant personal execution.",
+  "data_status": "simulated_benchmark_not_field_data",
+  "claim_boundary": "Research-training portfolio; not a live-market or employer result.",
+  "seed": 20260818,
+  "data_fingerprint": "3fe6da652516df24388d320106c79c7489509327d35133cda9397ba72d7125dc",
+  "n_hourly_rows": 10080,
+  "n_examples": 9888,
+  "split_issue_days": {
+    "train": 247,
+    "calibration": 82,
+    "test": 83
+  },
+  "static_qhat": 7.9299410747708166,
+  "horizon_static_qhats": {
+    "1": 11.529943717096806,
+    "2": 6.736264987385205,
+    "3": 7.447027282177032,
+    "4": 7.978655534462909,
+    "5": 9.993380277475126,
+    "6": 10.78193569299507,
+    "7": 9.914874556407128,
+    "8": 9.385453903355334,
+    "9": 6.606532496624531,
+    "10": 8.465128595590315,
+    "11": 8.479548149212583,
+    "12": 6.499178614455744,
+    "13": 8.291216791603752,
+    "14": 8.75463446139696,
+    "15": 6.196144584289755,
+    "16": 8.08542327895887,
+    "17": 10.313493324753594,
+    "18": 9.00914572228293,
+    "19": 9.13398279955171,
+    "20": 7.767621075542905,
+    "21": 6.3503135517270195,
+    "22": 6.144044784961125,
+    "23": 7.334415630149813,
+    "24": 6.824684764828781
+  },
+  "ood_threshold": 1.2978265794904305,
+  "software": {
+    "python": "3.13.15",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit_learn": "1.8.0"
+  },
+  "config": {
+    "seed": 20260818,
+    "data": {
+      "n_days": 420,
+      "start": "2024-01-01",
+      "timezone": "UTC",
+      "target": "price_eur_mwh"
+    },
+    "split": {
+      "train_fraction": 0.6,
+      "calibration_fraction": 0.2
+    },
+    "model": {
+      "backend": "sklearn",
+      "quantiles": [
+        0.05,
+        0.1,
+        0.25,
+        0.5,
+        0.75,
+        0.9,
+        0.95
+      ],
+      "max_iter": 140,
+      "learning_rate": 0.06,
+      "max_leaf_nodes": 31,
+      "min_samples_leaf": 24,
+      "l2_regularization": 0.15
+    },
+    "calibration": {
+      "lower_quantile": 0.1,
+      "upper_quantile": 0.9,
+      "target_miscoverage": 0.2,
+      "adaptive_gamma": 0.015,
+      "adaptive_window_per_horizon": 30
+    },
+    "evaluation": {
+      "rolling_coverage_window_hours": 168,
+      "extreme_fraction": 0.1,
+      "rolling_origin_folds": 3,
+      "rolling_origin_test_days": 28
+    }
+  }
+}
