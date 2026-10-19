@@ -1,0 +1,21 @@
+test_adaptive_interval_does_not_use_its_own_outcome (test_pipeline.TestDataPipeline.test_adaptive_interval_does_not_use_its_own_outcome) ... ok
+test_adaptive_unattainable_rank_propagates_infinite_bounds (test_pipeline.TestDataPipeline.test_adaptive_unattainable_rank_propagates_infinite_bounds) ... ok
+test_coverage_chart_includes_historical_raw_point_below_055 (test_pipeline.TestDataPipeline.test_coverage_chart_includes_historical_raw_point_below_055) ... ok
+test_decimal_rank_boundary_and_adjacent_alphas (test_pipeline.TestDataPipeline.test_decimal_rank_boundary_and_adjacent_alphas) ... ok
+test_features_are_complete_and_time_ordered (test_pipeline.TestDataPipeline.test_features_are_complete_and_time_ordered) ... ok
+test_finite_only_metrics_are_explicitly_conditional (test_pipeline.TestDataPipeline.test_finite_only_metrics_are_explicitly_conditional) ... ok
+test_finite_sample_quantile_is_monotone (test_pipeline.TestDataPipeline.test_finite_sample_quantile_is_monotone) ... ok
+test_finite_sample_quantile_rank_boundaries_and_ties (test_pipeline.TestDataPipeline.test_finite_sample_quantile_rank_boundaries_and_ties) ... ok
+test_finite_sample_quantile_rejects_invalid_miscoverage (test_pipeline.TestDataPipeline.test_finite_sample_quantile_rejects_invalid_miscoverage) ... ok
+test_finite_sample_quantile_rejects_invalid_scores (test_pipeline.TestDataPipeline.test_finite_sample_quantile_rejects_invalid_scores) ... ok
+test_finite_sample_quantile_uses_exact_discrete_rank (test_pipeline.TestDataPipeline.test_finite_sample_quantile_uses_exact_discrete_rank) ... ok
+test_groupwise_static_calibration_keeps_horizons_separate (test_pipeline.TestDataPipeline.test_groupwise_static_calibration_keeps_horizons_separate) ... ok
+test_infinite_interval_score_is_infinite_not_nan (test_pipeline.TestDataPipeline.test_infinite_interval_score_is_infinite_not_nan) ... ok
+test_leading_missing_history_is_rejected (test_pipeline.TestDataPipeline.test_leading_missing_history_is_rejected) ... ok
+test_model_features_exclude_targets_and_realised_future_values (test_pipeline.TestDataPipeline.test_model_features_exclude_targets_and_realised_future_values) ... ok
+test_unattainable_finite_sample_rank_returns_infinity (test_pipeline.TestDataPipeline.test_unattainable_finite_sample_rank_returns_infinity) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.102s
+
+OK

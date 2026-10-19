@@ -1,0 +1,7 @@
+                 method  coverage  mean_width  interval_score  unbounded_fraction  finite_only_mean_width  finite_only_interval_score  seasonal_naive_mae  quantile_model_mae  mean_pinball  approx_crps  infinite_interval_count
+          Raw quantiles  0.556225   11.896091       34.007247                 0.0               11.896091                   34.007247           11.268044            6.299118      2.016259     4.501505                        0
+    Static CQR (pooled)  0.924197   27.580914       32.176642                 0.0               27.580914                   32.176642           11.268044            6.299118      2.016259     4.501505                        0
+Static CQR (by horizon)  0.923695   28.378878       33.032735                 0.0               28.378878                   33.032735           11.268044            6.299118      2.016259     4.501505                        0
+           Adaptive CQR  0.795181   20.784492       30.999364                 0.0               20.784492                   30.999364           11.268044            6.299118      2.016259     4.501505                        0
+
+Artifacts written under: C:\Users\40610\Documents\Codex\2026-10-12\tools-numpy-pandas-scipy-highs-scikit\work\revision_20261018\p1\corrected_v110\gamma_050\outputs

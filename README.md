@@ -1,191 +1,103 @@
-# Project 1 — Probabilistic electricity-price forecasting under regime shift
+# P1 — Electricity-price forecasting under regime shift — corrected v1.1.0
 
-> **Data status:** SIMULATED BENCHMARK — NOT FIELD DATA. All coverage, error and
-> interval-width values in this repository come from the included simulator. They
-> are not results from Tarim Oilfield, an employer, a named electricity market or
-> a live trading system.
+**SIMULATED BENCHMARK — NOT FIELD DATA.** These are research-training experiments,
+not employer, Tarim Oilfield, named-market or trading-system results.
 
-This application portfolio demonstrates a leakage-controlled and reproducible
-pipeline for short-horizon probabilistic electricity-price forecasting under
-regime shift. Seven pooled direct models, one for each quantile level, use forecast
-horizon as an input and estimate marginal uncertainty for 24 hourly targets. The
-comparison includes a seasonal-naive point baseline, raw quantile intervals,
-pooled static conformalized quantile regression (CQR), horizon-specific static CQR
-and an online adaptive CQR wrapper.
+The 2026-10-18 corrected local edition fixes the conformal order statistic and
+re-runs the baseline, two gamma sensitivities and three baseline simulation seeds.
+Reference runs and earlier reproduction records are kept separately. See
+[project history](PROJECT_HISTORY.md) for the version timeline and source note.
 
-## What the project demonstrates
+## Current result
 
-- chronological train/calibration/evaluation separation;
-- rolling-origin diagnostics rather than a random train/test split;
-- multi-quantile forecasts rather than point forecasts alone;
-- coverage, interval width, interval score, pinball loss and approximate CRPS;
-- explicit checks on extreme-price and out-of-distribution subsets;
-- reproducible configurations, tests, manifests, tables and figures;
-- honest reporting of calibration failures and trade-offs.
+At seed 20260817, gamma 0.015, adaptive marginal coverage is **0.806225**, mean
+interval width **21.274739 EUR/MWh**, and interval score **30.727504**. The pooled
+static comparator covers 0.924197 with width 27.580914; raw coverage is 0.556225.
+The 80% target is descriptive here: this clipped, rolling adaptive implementation
+does not establish a coverage theorem under arbitrary temporal dependence.
 
-## Provenance and my verification work
+The corrected rank is `k = ceil((n+1)*(1-alpha))`, selecting sorted score `k-1`.
+When `k > n`, the correction is positive infinity rather than the largest finite
+score. Nonfinite scores and invalid alpha values are rejected. All five completed
+runs had zero unbounded final-test intervals; the general boundary is nevertheless
+tested and retained. Tables include unconditional means, unbounded fractions and
+clearly named `finite_only_*` conditional diagnostics. Infinite means remain
+infinite. Decimal alpha boundaries avoid accidental extra ranks from binary
+floating-point arithmetic.
 
-The initial portfolio snapshot and supplied reference outputs predate this Git
-repository. `PROJECT_HISTORY.md` records that boundary. I do not use the later Git
-history as evidence that I personally completed every earlier development step.
+Read [the corrected report](report/report_v110.md),
+[release summary](NEW_RELEASE_SUMMARY.md), and
+[reproduction record](REPRODUCIBILITY_RECORD.md) for the evidence and limits.
 
-After the initial import, I independently:
+Optional PDF reproduction uses `python -m pip install -r requirements-report.txt`
+then `python scripts/build_report.py --output report/P1_Technical_Report_Haorui_Cai_v110.pdf`.
+The report source includes page breaks and uses only corrected figures. The PDF
+must be visually checked after rendering; the historical PDF is kept separately.
 
-1. created a Windows virtual environment using Python 3.13.15;
-2. ran all six unit tests successfully;
-3. reproduced the baseline and compared it with the supplied Python 3.12.14
-   reference run;
-4. reran the supplied `adaptive_gamma = 0.050` sensitivity configuration;
-5. wrote and committed a pre-run plan for an intermediate
-   `adaptive_gamma = 0.030` experiment;
-6. ran that experiment, compared all three gamma values and recorded its limits.
+## Reproduce a new run
 
-The dated records, terminal logs and generated outputs are indexed in
-`evidence/README.md`. These records show my verification and learning work after
-the import; they do not convert the pre-import history into personal Git evidence.
-
-## Quick start
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate it on Windows PowerShell:
+Use Python >=3.11, create and activate a virtual environment, then:
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-Or activate it on macOS/Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Install the locked dependencies and run the tests:
-
-```bash
 python -m pip install -r requirements-lock.txt
+$env:PYTHONDONTWRITEBYTECODE='1'
+$env:PYTHONPATH=(Join-Path (Get-Location).Path 'src')
+$env:MPLCONFIGDIR=(Join-Path (Get-Location).Path '.matplotlib')
+$env:OMP_NUM_THREADS='2'
+$env:P1_EXECUTOR='Describe the actual operator and date truthfully'
 python -m unittest discover -s tests -v
+python scripts/run_experiment.py --config configs/base.yaml --output-root local_runs/v110_baseline
+python scripts/run_experiment.py --config configs/gamma_030.yaml --output-root local_runs/v110_gamma_030
+python scripts/run_experiment.py --config configs/gamma_sensitivity.yaml --output-root local_runs/v110_gamma_050
+python scripts/run_seed_check.py --seed 20260818 --output-root local_runs/v110_seed_20260818
+python scripts/run_seed_check.py --seed 20260819 --output-root local_runs/v110_seed_20260819
 ```
 
-Run the reference configuration without overwriting committed evidence:
+Scripts explicitly put this checkout's `src` first on the import path, including
+when an existing editable installation points elsewhere. A run manifest records
+software versions, config, data fingerprint, version and operator declaration.
+The release includes 16 passing regression tests; use the current test output for
+later runs. Do not overwrite preserved historical records.
 
-```bash
-python scripts/run_experiment.py --config configs/base.yaml --output-root local_runs/baseline
-```
+## Artifact map
 
-Optional sensitivity runs:
+| Location | Status |
+| --- | --- |
+| `corrected_v110/baseline/` | Corrected reference run, seed 20260817, gamma .015 |
+| `corrected_v110/gamma_030/`, `gamma_050/` | Corrected same-seed sensitivities |
+| `corrected_v110/seed_20260818/`, `seed_20260819/` | Additional full baseline seeds |
+| `corrected_v110/logs/` | Reference execution and test logs, 2026-10-18 |
+| `report/report_v110.md` | Active corrected report source |
+| `historical/v102/` | Unmodified supplied outputs, experiments, old report, README and reproduction record |
+| `evidence/` | Frozen earlier reproduction records; the index uses the historical layout |
+| `PROJECT_HISTORY.md` | Version timeline and source note |
 
-```bash
-python scripts/run_experiment.py --config configs/gamma_sensitivity.yaml --output-root local_runs/gamma_050
-python scripts/run_experiment.py --config configs/gamma_030.yaml --output-root local_runs/gamma_030
-```
+The original v1.0.2 PDF is historical and must not be presented as the corrected
+report. The old `experiments/gamma_005` name meant gamma .050. The unchanged original
+simulated CSV remains under `data/`; each corrected run also exports its own data.
+The new forecast for downstream P2 is
+`corrected_v110/baseline/outputs/forecast_quantiles_test.csv` (1,992 rows).
 
-`local_runs/` is excluded by `.gitignore`. The fixed seed is stored in each YAML
-configuration. Every generated `run_manifest.json` records the configuration,
-software versions and data fingerprint.
+## Interpretation boundaries
 
-## Configuration status
+The 420-day simulator generates issuance-time forecast proxies by perturbing
+realised simulated covariates; there are no actual publication vintages. Daily
+issue time equals the first target time, so horizon 1 is a nowcast-like case,
+and the historical `day-ahead` label is too strong without an operational timing
+adapter. Lagged prices use only past history; no future backfill is used.
 
-| Configuration | Adaptive gamma | Status and purpose |
-| --- | ---: | --- |
-| `configs/base.yaml` | 0.015 | Pre-specified reference configuration |
-| `configs/gamma_sensitivity.yaml` | 0.050 | Supplied post-hoc sensitivity configuration |
-| `configs/gamma_030.yaml` | 0.030 | Applicant-planned exploratory sensitivity run |
+Hourly intervals are marginal, not jointly calibrated 24-hour paths. The online
+wrapper uses separate horizon buffers of 30 past scores and clips alpha to
+[.01,.99], changing the usual ACI recursion. Same-horizon updates use earlier
+days' outcomes, under assumed immediate availability. Both the simulator and this
+availability assumption need validation before any operational use.
 
-The supplied snapshot directory `experiments/gamma_005/` is a legacy name for the
-`0.050` configuration. The directory is retained to preserve the imported reference
-snapshot. New evidence uses the clearer name `evidence/runs/gamma_050/`.
+The same final block is reused for gamma diagnostics; no new untouched evaluation
+set is created. All 1,992 final-test rows are in the renewable-shift regime, so the
+`Renewable shift` subset repeats `All` and there is no volatile final-test subset.
+Rolling folds cover different periods and show substantial failures. Three seeds
+are a small robustness check, not population inference or proof of superiority.
 
-The gamma comparisons reuse the same chronologically held-out evaluation block.
-They are sensitivity diagnostics, not independent test-set tuning and not proof
-that one gamma value is universally optimal. Gamma 0.015 remains the pre-specified
-reference configuration.
-
-## Reproducibility status
-
-The supplied reference run used Python 3.12.14. I reproduced the pipeline on
-Windows with Python 3.13.15 and the locked package versions. All six tests passed.
-The local simulated data had the same shape and non-numeric values as the reference
-data, and the numeric values matched after rounding to 10 decimal places. The
-maximum absolute numeric difference was approximately `2.84e-14`.
-
-Those negligible cross-platform floating-point differences changed the exact data
-fingerprint and caused small metric differences. The Windows run is therefore
-reported as a successful numerical cross-platform reproduction, not a byte-identical
-reproduction. `REPRODUCIBILITY_RECORD.md` keeps the supplied reference results and
-the later applicant verification results separate.
-
-## Data boundary
-
-The benchmark is simulated. It represents hourly load, renewable output,
-day-ahead forecasts, data-quality incidents and three market regimes. It is not
-Tarim Oilfield data and it is not evidence about any real company or electricity
-market. `data/README.md` defines a schema for a possible future extension using
-appropriately licensed public data.
-
-Any real-data extension would need to preserve time order and issuance-time feature
-availability. Employer or client data would additionally require permission,
-de-identification and a separate data-governance review.
-
-## Model choices
-
-The default backend is scikit-learn histogram gradient boosting with quantile loss,
-so the project can run without proprietary software. An optional LightGBM backend
-can be selected after installing `requirements-optional.txt`. Quantile crossings
-are repaired by row-wise rearrangement; this practical choice is reported as a
-limitation.
-
-The adaptive calibration parameter controls how quickly the interval correction
-responds to recent errors. A larger gamma can react faster but may also produce
-greater instability or larger penalties on missed observations. The personal
-gamma 0.030 run therefore evaluates coverage, width and interval score together
-rather than selecting a setting from coverage alone.
-
-## Relationship to existing work
-
-The project implements established ideas rather than claiming a new foundational
-algorithm. Quantile regression and CQR motivate the raw and static intervals;
-adaptive and sequential conformal work motivates online updates under change; and
-recent electricity-price studies show that probabilistic and conformal forecasting
-is already an active field. `RELATED_WORK.md` records the closest strands and the
-project's contribution boundary.
-
-The contribution is an inspectable training benchmark with explicit temporal
-separation, reproducible stress tests and failure analysis. It is not the first use
-of conformal prediction for electricity prices, and it does not establish general
-coverage under arbitrary temporal dependence.
-
-## Evaluation limits
-
-The final 83-day block is chronologically separated from model fitting and initial
-conformal calibration. However, it is also reused for the reported post-hoc gamma
-sensitivity diagnostics. It should therefore not be described as an untouched test
-set after those analyses were performed.
-
-The reported hourly intervals are marginal intervals. They do not automatically
-form a jointly reliable 24-hour scenario path. Results from one simulated dataset
-and one random seed cannot establish real-market performance or universal model
-superiority.
-
-## Repository guide
-
-- `REPRODUCIBILITY_RECORD.md` — supplied reference record plus dated applicant verification;
-- `evidence/README.md` — index of personal logs, plans, runs and result tables;
-- `PROJECT_HISTORY.md` — boundary between the imported snapshot and later Git work;
-- `RELATED_WORK.md` — literature relationship and contribution limits;
-- `RESPONSIBLE_USE.md` — data, claims and disclosure boundaries;
-- `configs/` — reference and sensitivity configurations;
-- `tests/` — six automated checks;
-- `experiments/` — supplied reference snapshots;
-- `evidence/runs/` — applicant-run output snapshots.
-
-## Responsible use
-
-Read `RESPONSIBLE_USE.md` before sharing or describing the project. Never present
-the simulated results as employer, field or trading outcomes. If an application or
-university asks about generative AI, coding assistance or external editing, disclose
-that assistance accurately under the applicable rule.
+Established quantile-regression and conformal methods underpin the project;
+`RELATED_WORK.md` preserves the literature and contribution boundary. See
+[responsible use](RESPONSIBLE_USE.md) for scope and data-use limits.

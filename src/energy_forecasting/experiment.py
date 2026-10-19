@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import platform
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from .conformal import adaptive_cqr, groupwise_static_cqr, static_cqr
 from .data import build_day_ahead_examples, chronological_split, dataframe_fingerprint, simulate_hourly_market
 from .metrics import approximate_crps, interval_metrics, pinball_loss, rolling_coverage
 from .models import QuantileEnsemble, ood_score, quantile_column
+from . import __version__
 
 
 COLORS = {
@@ -153,6 +155,7 @@ def run(config_path: str | Path, root: str | Path) -> dict:
     summary_rows = []
     for method, (low, high) in interval_methods.items():
         row = {"method": method, **interval_metrics(target, low, high, alpha), **base_metrics}
+        row["infinite_interval_count"] = int((~np.isfinite(low) | ~np.isfinite(high)).sum())
         summary_rows.append(row)
     summary = pd.DataFrame(summary_rows)
     summary.to_csv(root / "outputs" / "tables" / "overall_metrics.csv", index=False)
@@ -209,6 +212,8 @@ def run(config_path: str | Path, root: str | Path) -> dict:
 
     manifest = {
         "project": "P1_forecasting_under_regime_shift",
+        "release_version": __version__,
+        "execution_provenance": os.environ.get("P1_EXECUTOR", "Operator unspecified; this manifest alone is not evidence of applicant personal execution."),
         "data_status": "simulated_benchmark_not_field_data",
         "claim_boundary": "Research-training portfolio; not a live-market or employer result.",
         "seed": int(config["seed"]),
@@ -354,10 +359,14 @@ def _plot_coverage_width(summary: pd.DataFrame, path: Path) -> None:
     }
     for _, row in summary.iterrows():
         color = method_colors[row["method"]]
-        ax.scatter(row["mean_width"], row["coverage"], s=90, color=color, label=row["method"])
+        if np.isfinite(row["mean_width"]):
+            ax.scatter(row["mean_width"], row["coverage"], s=90, color=color, label=row["method"])
+        else:
+            ax.plot([], [], color=color, marker="o", ls="", label=f"{row['method']} (mean width = infinity)")
+            ax.text(0.02, 0.96, f"{row['method']}: coverage {row['coverage']:.3f}; infinite mean width", transform=ax.transAxes, va="top", color=color)
     ax.axhline(0.80, color=COLORS["red"], ls="--", lw=1, label="80% target")
     ax.set(xlabel="Mean interval width (EUR/MWh)", ylabel="Empirical coverage", title="Reliability-sharpness trade-off")
-    ax.set_ylim(0.55, 1.0)
+    ax.set_ylim(0.0, 1.02)
     ax.legend()
     _save_figure(fig, path)
 
