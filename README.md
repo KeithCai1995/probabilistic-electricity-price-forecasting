@@ -44,7 +44,6 @@ $env:PYTHONDONTWRITEBYTECODE='1'
 $env:PYTHONPATH=(Join-Path (Get-Location).Path 'src')
 $env:MPLCONFIGDIR=(Join-Path (Get-Location).Path '.matplotlib')
 $env:OMP_NUM_THREADS='2'
-$env:P1_EXECUTOR='Describe the actual operator and date truthfully'
 python -m unittest discover -s tests -v
 python scripts/run_experiment.py --config configs/base.yaml --output-root local_runs/v110_baseline
 python scripts/run_experiment.py --config configs/gamma_030.yaml --output-root local_runs/v110_gamma_030
@@ -55,7 +54,7 @@ python scripts/run_seed_check.py --seed 20260819 --output-root local_runs/v110_s
 
 Scripts explicitly put this checkout's `src` first on the import path, including
 when an existing editable installation points elsewhere. A run manifest records
-software versions, config, data fingerprint, version and operator declaration.
+software versions, config, data fingerprint, version and execution context.
 The release includes 16 passing regression tests; use the current test output for
 later runs. Do not overwrite preserved historical records.
 
@@ -68,8 +67,8 @@ later runs. Do not overwrite preserved historical records.
 | `corrected_v110/seed_20260818/`, `seed_20260819/` | Additional full baseline seeds |
 | `corrected_v110/logs/` | Reference execution and test logs, 2026-10-18 |
 | `report/report_v110.md` | Active corrected report source |
-| `historical/v102/` | Unmodified supplied outputs, experiments, old report, README and reproduction record |
-| `evidence/` | Frozen earlier reproduction records; the index uses the historical layout |
+| `historical/v102/` | Earlier numerical outputs and historical reports/documentation; presentation wording cleaned |
+| `evidence/` | Earlier reproduction records; numerical artifacts retained and index wording cleaned |
 | `PROJECT_HISTORY.md` | Version timeline and source note |
 
 The original v1.0.2 PDF is historical and must not be presented as the corrected

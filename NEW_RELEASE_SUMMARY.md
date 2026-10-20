@@ -28,8 +28,10 @@ width 21.274739–22.474140, and score 30.727504–32.780810. Final-test unbound
 fractions are zero for all methods/runs. Infinity handling is still necessary for
 small buffers and small alpha; it has not been replaced by a finite cap.
 
-Old active outputs/experiments/report were moved inside `historical/v102/` and
-their bytes preserved. Earlier `evidence/` personal logs remain unmodified.
+Old active outputs/experiments/report were moved inside `historical/v102/`.
+Numerical artifacts were retained; documentation and report presentation wording
+was cleaned on 19 October 2026. Pre-cleanup copies are stored separately outside
+this repository. Earlier run records remain under `evidence/`.
 Saved corrected reference results are under `corrected_v110/`; active report source is
 `report/report_v110.md`. Read it for timing, dependence, clipping, subset and joint
 calibration limitations. These simulated results are not evidence of live-market

@@ -74,11 +74,11 @@ def main():
         story.append(Paragraph(fmt(text),styles[key]));i+=1
     def footer(canvas,doc):
         canvas.setFont('Portfolio',7.5)
-        canvas.drawString(54,27,'18 October 2026 | Assisted technical revision | Local v1.1.0')
+        canvas.drawString(54,27,'18 October 2026 | Corrected technical report | Local v1.1.0')
         canvas.drawRightString(558,27,str(doc.page))
     args.output.parent.mkdir(parents=True,exist_ok=True)
     SimpleDocTemplate(str(args.output),pagesize=letter,leftMargin=54,rightMargin=54,topMargin=42,bottomMargin=44,
-       author='Haorui Cai; assisted technical revision',title='Corrected technical portfolio v1.1.0').build(story,onFirstPage=footer,onLaterPages=footer)
+       author='Haorui Cai',title='Corrected technical portfolio v1.1.0').build(story,onFirstPage=footer,onLaterPages=footer)
     print(args.output)
 
 

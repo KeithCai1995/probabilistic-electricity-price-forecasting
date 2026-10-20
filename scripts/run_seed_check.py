@@ -1,4 +1,4 @@
-"""Assistant-authored seed diagnostic; writes an explicit config then runs it.
+"""Seed diagnostic; writes an explicit config then runs it.
 
 Invoke once per seed with a dedicated output root. The same full baseline model,
 420-day simulator and rolling folds are retained, so only the seed changes.

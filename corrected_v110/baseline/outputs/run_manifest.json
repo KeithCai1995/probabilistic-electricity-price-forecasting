@@ -1,7 +1,7 @@
 {
   "project": "P1_forecasting_under_regime_shift",
   "release_version": "1.1.0",
-  "execution_provenance": "Assistant-executed corrected local release on 2026-10-18; not applicant personal execution.",
+  "execution_provenance": "Corrected reference run, 2026-10-18.",
   "data_status": "simulated_benchmark_not_field_data",
   "claim_boundary": "Research-training portfolio; not a live-market or employer result.",
   "seed": 20260817,

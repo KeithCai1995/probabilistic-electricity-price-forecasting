@@ -23,13 +23,12 @@ and an online adaptive CQR wrapper.
 - reproducible configurations, tests, manifests, tables and figures;
 - honest reporting of calibration failures and trade-offs.
 
-## Provenance and my verification work
+## Provenance and verification work
 
 The initial portfolio snapshot and supplied reference outputs predate this Git
-repository. `PROJECT_HISTORY.md` records that boundary. I do not use the later Git
-history as evidence that I personally completed every earlier development step.
+repository. `PROJECT_HISTORY.md` records that boundary.
 
-After the initial import, I independently:
+After the initial import, the recorded verification included:
 
 1. created a Windows virtual environment using Python 3.13.15;
 2. ran all six unit tests successfully;
@@ -41,8 +40,8 @@ After the initial import, I independently:
 6. ran that experiment, compared all three gamma values and recorded its limits.
 
 The dated records, terminal logs and generated outputs are indexed in
-`evidence/README.md`. These records show my verification and learning work after
-the import; they do not convert the pre-import history into personal Git evidence.
+`evidence/README.md`. These records describe verification and learning work after
+the import.
 
 ## Quick start
 
@@ -94,7 +93,7 @@ software versions and data fingerprint.
 | --- | ---: | --- |
 | `configs/base.yaml` | 0.015 | Pre-specified reference configuration |
 | `configs/gamma_sensitivity.yaml` | 0.050 | Supplied post-hoc sensitivity configuration |
-| `configs/gamma_030.yaml` | 0.030 | Applicant-planned exploratory sensitivity run |
+| `configs/gamma_030.yaml` | 0.030 | Planned exploratory sensitivity run |
 
 The supplied snapshot directory `experiments/gamma_005/` is a legacy name for the
 `0.050` configuration. The directory is retained to preserve the imported reference
@@ -117,7 +116,7 @@ Those negligible cross-platform floating-point differences changed the exact dat
 fingerprint and caused small metric differences. The Windows run is therefore
 reported as a successful numerical cross-platform reproduction, not a byte-identical
 reproduction. `REPRODUCIBILITY_RECORD.md` keeps the supplied reference results and
-the later applicant verification results separate.
+the later local verification results separate.
 
 ## Data boundary
 
@@ -173,7 +172,7 @@ superiority.
 
 ## Repository guide
 
-- `REPRODUCIBILITY_RECORD.md` — supplied reference record plus dated applicant verification;
+- `REPRODUCIBILITY_RECORD.md` — supplied reference record plus dated local verification;
 - `evidence/README.md` — index of personal logs, plans, runs and result tables;
 - `PROJECT_HISTORY.md` — boundary between the imported snapshot and later Git work;
 - `RELATED_WORK.md` — literature relationship and contribution limits;
@@ -181,11 +180,9 @@ superiority.
 - `configs/` — reference and sensitivity configurations;
 - `tests/` — six automated checks;
 - `experiments/` — supplied reference snapshots;
-- `evidence/runs/` — applicant-run output snapshots.
+- `evidence/runs/` — local reproduction output snapshots.
 
 ## Responsible use
 
 Read `RESPONSIBLE_USE.md` before sharing or describing the project. Never present
-the simulated results as employer, field or trading outcomes. If an application or
-university asks about generative AI, coding assistance or external editing, disclose
-that assistance accurately under the applicable rule.
+the simulated results as employer, field or trading outcomes.

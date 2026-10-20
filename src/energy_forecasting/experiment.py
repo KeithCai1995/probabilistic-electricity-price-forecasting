@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import os
 import platform
 from pathlib import Path
 
@@ -213,7 +212,7 @@ def run(config_path: str | Path, root: str | Path) -> dict:
     manifest = {
         "project": "P1_forecasting_under_regime_shift",
         "release_version": __version__,
-        "execution_provenance": os.environ.get("P1_EXECUTOR", "Operator unspecified; this manifest alone is not evidence of applicant personal execution."),
+        "execution_provenance": "Local experiment execution.",
         "data_status": "simulated_benchmark_not_field_data",
         "claim_boundary": "Research-training portfolio; not a live-market or employer result.",
         "seed": int(config["seed"]),

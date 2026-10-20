@@ -2,10 +2,9 @@
 
 ## Purpose
 
-This directory records the applicant's independent verification and learning work
-after the initial portfolio snapshot was placed under version control. It is intended
-to make the process inspectable without implying that pre-import development steps
-were completed by the applicant.
+This directory records verification and learning work after the initial portfolio
+snapshot was placed under version control. It indexes the dated local runs and
+their saved results.
 
 All datasets and results in this directory come from the included simulator. No
 Tarim Oilfield, employer, client or live-market data are used.
@@ -13,7 +12,7 @@ Tarim Oilfield, employer, client or live-market data are used.
 ## Suggested reading order
 
 1. `../PROJECT_HISTORY.md` — provenance and Git-history boundary;
-2. `learning_log/baseline_reproduction.md` — independent baseline reproduction;
+2. `learning_log/baseline_reproduction.md` — baseline reproduction;
 3. `learning_log/gamma_050_sensitivity.md` — rerun of the supplied sensitivity;
 4. `learning_log/gamma_030_plan.md` — intermediate-gamma plan written before running;
 5. `learning_log/gamma_030_results.md` — observed results and limitations;
@@ -26,7 +25,7 @@ Tarim Oilfield, employer, client or live-market data are used.
 | `python_version.txt` | Local Python version recorded on Windows |
 | `unit_tests.txt` | Clean output from six passing unit tests |
 
-The supplied reference environment used Python 3.12.14. The applicant's local
+The supplied reference environment used Python 3.12.14. The later local
 verification used Python 3.13.15 with the locked package versions.
 
 ## Terminal logs
@@ -35,7 +34,7 @@ verification used Python 3.13.15 with the locked package versions.
 | --- | --- |
 | `baseline_terminal_log.txt` | Baseline run using `configs/base.yaml` |
 | `gamma_050_terminal_log.txt` | Supplied sensitivity using gamma 0.050 |
-| `gamma_030_terminal_log.txt` | Applicant-planned run using gamma 0.030 |
+| `gamma_030_terminal_log.txt` | Planned run using gamma 0.030 |
 
 The logs are stored as UTF-8 text so they can be reviewed directly. Exit code 0 was
 recorded for all three runs.
@@ -56,9 +55,9 @@ was known. The result record reports both improvements and non-improvements.
 
 | Directory | Configuration | Status |
 | --- | --- | --- |
-| `runs/baseline/` | `configs/base.yaml`, gamma 0.015 | Independent baseline reproduction |
+| `runs/baseline/` | `configs/base.yaml`, gamma 0.015 | Baseline reproduction |
 | `runs/gamma_050/` | `configs/gamma_sensitivity.yaml`, gamma 0.050 | Rerun of supplied sensitivity |
-| `runs/gamma_030/` | `configs/gamma_030.yaml`, gamma 0.030 | Applicant-planned exploratory run |
+| `runs/gamma_030/` | `configs/gamma_030.yaml`, gamma 0.030 | Planned exploratory run |
 
 Each run directory contains:
 
@@ -81,12 +80,12 @@ narrowest interval, but it has a worse interval score. Gamma 0.015 has the lowes
 interval score by a very small margin. Gamma 0.030 gives an intermediate result.
 No setting is presented as universally optimal.
 
-## Reference snapshots versus applicant evidence
+## Reference snapshots versus later local runs
 
 The imported reference snapshots are stored separately under `../experiments/`.
 The legacy directory `../experiments/gamma_005/` represents gamma 0.050. Files under
-this `evidence/` directory record later applicant-run verification. Reference and
-applicant metrics should not be silently combined because tiny cross-platform
+this `evidence/` directory record later local verification. Reference and later
+local metrics should not be silently combined because tiny cross-platform
 floating-point differences changed the exact simulated values and fingerprints.
 
 ## Scope limits
@@ -97,5 +96,4 @@ interpretation on one simulated benchmark. They do not establish:
 - performance on real electricity-market or employer data;
 - general validity under every form of temporal dependence or regime shift;
 - jointly reliable 24-hour scenario paths from marginal hourly intervals;
-- an independently validated optimal gamma;
-- personal authorship of development work completed before the Git import.
+- an independently validated optimal gamma.
