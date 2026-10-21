@@ -145,6 +145,28 @@ class TestConfigAndSmoke(unittest.TestCase):
             self.assertEqual(float(figure.axes[0].lines[-1].get_ydata()[0]), .9)
             plt.close(figure)
 
+    def test_rolling_coverage_shows_baseline_low_point_and_all_finite_curves(self) -> None:
+        frame = pd.read_csv(ROOT / "corrected_v110/baseline/outputs/forecast_quantiles_test.csv")
+        with patch("energy_forecasting.experiment._save_figure") as save:
+            _plot_rolling_coverage(frame, 168, Path("unused.png"))
+            figure = save.call_args.args[0]
+            try:
+                axis = figure.axes[0]
+                lower, upper = axis.get_ylim()
+                self.assertEqual(lower, 0.0)
+                self.assertGreaterEqual(upper, 1.0)
+                self.assertEqual(len(axis.lines), 5)  # Four methods and the target line.
+                raw_values = np.asarray(axis.lines[0].get_ydata(), dtype=float)
+                self.assertAlmostEqual(float(np.nanmin(raw_values)), 3.0 / 7.0)
+                self.assertEqual(int(np.sum(raw_values < .45)), 2)
+                for line in axis.lines:
+                    values = np.asarray(line.get_ydata(), dtype=float)
+                    finite = values[np.isfinite(values)]
+                    self.assertGreater(len(finite), 0, line.get_label())
+                    self.assertTrue(np.all((finite >= lower) & (finite <= upper)), line.get_label())
+            finally:
+                plt.close(figure)
+
     def test_invalid_quantile_and_split_settings_fail_before_fitting(self) -> None:
         base = smoke_config()
         variants = []

@@ -39,7 +39,7 @@ scores than gamma=.015. Feedback produces narrower intervals with coverage neare
 comparison is a comparison of combined wrappers, not proof of an alpha-feedback
 benefit. Original reference outputs and the downstream P2 forecast remain unchanged.
 
-The current local suite has 27 passing tests, including a real-model nondefault
+The current local suite has 28 passing tests, including a real-model nondefault
 q05/q95, 90%-target pipeline smoke, future-information perturbations, fixed-alpha
 rolling behavior and output protection. A lightweight workflow is configured for
 Ubuntu/Windows with Python 3.11/3.13; this local update does not itself establish
@@ -74,7 +74,7 @@ python scripts/run_seed_check.py --seed 20260819 --output-root local_runs/v110_s
 Scripts explicitly put this checkout's `src` first on the import path, including
 when an existing editable installation points elsewhere. A run manifest records
 software versions, config, data fingerprint, version and execution context.
-The 18 October reference suite had 16 tests; the expanded current suite has 27.
+The 18 October reference suite had 16 tests; the expanded current suite has 28.
 Use current test output for later runs. Do not overwrite preserved historical records.
 
 Every experiment command now requires a dedicated `--output-root`. Nonempty
@@ -107,7 +107,9 @@ used in CI; full baseline and supplementary model fits are separate local checks
 | `PROJECT_HISTORY.md` | Version timeline and source note |
 
 The existing `corrected_v110/release_verification.json` records its dated source
-snapshot. It is not rewritten after later source changes. The supplementary
+snapshot. Its recorded hashes, dates and numerical values are not refreshed after
+later source changes; only local path prefixes have been redacted as described
+below. The supplementary
 manifest records the new execution snapshot separately; neither hash record
 substitutes for tests or scientific validity.
 
@@ -140,3 +142,18 @@ are a small robustness check, not population inference or proof of superiority.
 Established quantile-regression and conformal methods underpin the project;
 `RELATED_WORK.md` preserves the literature and contribution boundary. See
 [responsible use](RESPONSIBLE_USE.md) for scope and data-use limits.
+
+## Published path redaction and rolling-coverage display
+
+Published logs and metadata use the explicit `<WORKSPACE>` placeholder for the
+original machine-specific workspace prefix. This is a display redaction, not a
+real replacement directory or a claim that the experiments ran elsewhere. Path
+suffixes, recorded dates, source/data hashes and numerical results are retained.
+See [the presentation-update record](PRESENTATION_UPDATE_20261021.md).
+
+The rolling-coverage figure now shows the full 0-1 coverage range, including raw
+coverage below .45. Five corrected reference figures were redrawn from their
+unchanged saved forecasts, without fitting models again. A new live-plot regression
+checks that all finite curve points are visible. The report and earlier logs retain
+their dated 27-test snapshot; the latest suite has 28 tests. This follow-up does not
+claim that a new remote CI run has already passed.

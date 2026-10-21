@@ -442,7 +442,7 @@ def _plot_rolling_coverage(test: pd.DataFrame, window: int, path: Path, *, lower
         curve = rolling_coverage(frame["price_eur_mwh"], frame[low], frame[high], window)
         ax.plot(pd.to_datetime(frame["target_time"]).dt.tz_localize(None), curve, lw=1.1, label=label, color=color)
     ax.axhline(target_coverage, color=COLORS["red"], ls="--", lw=1)
-    ax.set(title=f"Rolling empirical coverage ({window}-hour window)", ylabel="Coverage", xlabel="Target time", ylim=(0.45, 1.02))
+    ax.set(title=f"Rolling empirical coverage ({window}-hour window)", ylabel="Coverage", xlabel="Target time", ylim=(0.0, 1.02))
     ax.legend(ncol=2)
     _save_figure(fig, path)
 
