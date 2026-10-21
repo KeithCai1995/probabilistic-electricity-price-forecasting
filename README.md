@@ -29,8 +29,25 @@ Read [the corrected report](report/report_v110.md),
 [release summary](NEW_RELEASE_SUMMARY.md), and
 [reproduction record](REPRODUCIBILITY_RECORD.md) for the evidence and limits.
 
+## 21 October supplementary control and verification update
+
+The [fixed-alpha rolling control](corrected_v110/supplementary_20261021/README.md)
+isolates alpha feedback from the shared 30-score rolling window. Across the three
+existing seeds, gamma=0 gives coverage .820281–.825803 and slightly better interval
+scores than gamma=.015. Feedback produces narrower intervals with coverage nearer
+.80, but does not improve interval score here. The earlier adaptive-versus-static
+comparison is a comparison of combined wrappers, not proof of an alpha-feedback
+benefit. Original reference outputs and the downstream P2 forecast remain unchanged.
+
+The current local suite has 27 passing tests, including a real-model nondefault
+q05/q95, 90%-target pipeline smoke, future-information perturbations, fixed-alpha
+rolling behavior and output protection. A lightweight workflow is configured for
+Ubuntu/Windows with Python 3.11/3.13; this local update does not itself establish
+that the new workflow has run or passed on GitHub.
+
+The active PDF is [Haorui_Cai_Forecasting_Report_v110.pdf](report/Haorui_Cai_Forecasting_Report_v110.pdf).
 Optional PDF reproduction uses `python -m pip install -r requirements-report.txt`
-then `python scripts/build_report.py --output report/P1_Technical_Report_Haorui_Cai_v110.pdf`.
+then `python scripts/build_report.py`, which writes that same canonical filename.
 The report source includes page breaks and uses only corrected figures. The PDF
 must be visually checked after rendering; the historical PDF is kept separately.
 
@@ -45,6 +62,8 @@ $env:PYTHONPATH=(Join-Path (Get-Location).Path 'src')
 $env:MPLCONFIGDIR=(Join-Path (Get-Location).Path '.matplotlib')
 $env:OMP_NUM_THREADS='2'
 python -m unittest discover -s tests -v
+python -B scripts/check_saved_outputs.py
+python -B scripts/check_rolling_control.py
 python scripts/run_experiment.py --config configs/base.yaml --output-root local_runs/v110_baseline
 python scripts/run_experiment.py --config configs/gamma_030.yaml --output-root local_runs/v110_gamma_030
 python scripts/run_experiment.py --config configs/gamma_sensitivity.yaml --output-root local_runs/v110_gamma_050
@@ -55,8 +74,23 @@ python scripts/run_seed_check.py --seed 20260819 --output-root local_runs/v110_s
 Scripts explicitly put this checkout's `src` first on the import path, including
 when an existing editable installation points elsewhere. A run manifest records
 software versions, config, data fingerprint, version and execution context.
-The release includes 16 passing regression tests; use the current test output for
-later runs. Do not overwrite preserved historical records.
+The 18 October reference suite had 16 tests; the expanded current suite has 27.
+Use current test output for later runs. Do not overwrite preserved historical records.
+
+Every experiment command now requires a dedicated `--output-root`. Nonempty
+directories are refused unless `--overwrite` is explicitly requested for a
+recognized P1 run (a P1 marker or run manifest); arbitrary existing directories,
+the repository root, source folders and preserved reference directories remain
+protected. Overwrite replaces run-owned output files without deleting unrelated
+files. Prefer a new `local_runs/` directory. `local_runs/` and `.matplotlib/` are
+ignored by Git.
+
+The configured lower/upper quantiles and target miscoverage also govern the
+rolling-origin comparator and all plot labels/coverage reference lines. Rolling
+folds retain the original lower/median/upper three-model diagnostic; the default
+q10/q90/80% design is unchanged. A fresh full default rerun reproduced all six
+baseline CSVs byte-for-byte, including the P2 input. Only a small smoke dataset is
+used in CI; full baseline and supplementary model fits are separate local checks.
 
 ## Artifact map
 
@@ -66,10 +100,16 @@ later runs. Do not overwrite preserved historical records.
 | `corrected_v110/gamma_030/`, `gamma_050/` | Corrected same-seed sensitivities |
 | `corrected_v110/seed_20260818/`, `seed_20260819/` | Additional full baseline seeds |
 | `corrected_v110/logs/` | Reference execution and test logs, 2026-10-18 |
+| `corrected_v110/supplementary_20261021/` | New fixed-alpha rolling control; shared raw frames and replay checks |
 | `report/report_v110.md` | Active corrected report source |
 | `historical/v102/` | Earlier numerical outputs and historical reports/documentation; presentation wording cleaned |
 | `evidence/` | Earlier reproduction records; numerical artifacts retained and index wording cleaned |
 | `PROJECT_HISTORY.md` | Version timeline and source note |
+
+The existing `corrected_v110/release_verification.json` records its dated source
+snapshot. It is not rewritten after later source changes. The supplementary
+manifest records the new execution snapshot separately; neither hash record
+substitutes for tests or scientific validity.
 
 The original v1.0.2 PDF is historical and must not be presented as the corrected
 report. The old `experiments/gamma_005` name meant gamma .050. The unchanged original

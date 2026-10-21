@@ -15,6 +15,16 @@ material predates that Git history. The original statement is preserved at
 - **19 October 2026:** a personal rerun completed 16 tests and the default
   baseline, matching the reference metrics. Its local logs are kept separately
   under `Personal_Logs/20261019_080009/`, outside this repository.
+- **21 October 2026:** configuration-aware rolling quantiles and plot targets,
+  output-directory safeguards, future-information regressions, a real-model
+  nondefault pipeline smoke and a lightweight CI workflow were added. A fresh
+  complete default run reproduced all six baseline CSVs byte-for-byte. The
+  supplementary gamma=0 control uses the same reconstructed raw forecasts and
+  30-score buffers for all three existing baseline seeds. Feedback narrowed
+  intervals but slightly worsened interval score in each seed; no standalone
+  feedback advantage is claimed. New outputs are under
+  `corrected_v110/supplementary_20261021/`; prior evidence and P2 input are unchanged.
+  The active PDF filename is `report/Haorui_Cai_Forecasting_Report_v110.pdf`.
 
 ## Sources
 

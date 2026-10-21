@@ -1,0 +1,114 @@
+{
+  "study": "Fixed-alpha rolling-window control",
+  "study_date": "2026-10-21",
+  "started_utc": "2026-10-21T06:52:07.241495+00:00",
+  "finished_utc": "2026-10-21T06:52:16.857001+00:00",
+  "status": "completed supplementary experiment, not a replacement of 2026-10-18 reference evidence",
+  "design": "Same reconstructed baseline models, raw calibration/test quantiles, horizon groups and score buffers; only gamma=0 versus .015 changes.",
+  "scope": "Simulated final blocks from three existing seeds; no retuning, no independent test-set claim, no coverage theorem or joint calibration claim.",
+  "software": {
+    "python": "3.13.15",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit_learn": "1.8.0"
+  },
+  "omp_num_threads": "2",
+  "source_sha256": {
+    "scripts/build_report.py": "f0e84212e49e34c5061b75944d96fa65da8100da1a494f0ac21712a7826ad181",
+    "scripts/check_rolling_control.py": "da61a97a58b259f5c181610035db51aadc14148fc0d63f472702ec917e662d62",
+    "scripts/check_saved_outputs.py": "cdfe9994e0bceeafc429e45e459889b7a869806ce607afaa6e9c8d4cdedbb263",
+    "scripts/run_experiment.py": "85fb2a4590517035b64b3ddb7c0d51237274dfa586d8b1a135d5002c8c522ec3",
+    "scripts/run_rolling_control.py": "cf1b6f18b1089a1bfccb32cdb3d0e45d8e937c60ed33ad3c96c936fb40362ede",
+    "scripts/run_seed_check.py": "45817eb329eee5897fe5f925759d669834e2d9b34b3c556fae63a0e2cbde4f6c",
+    "scripts/summarize_release.py": "5ef16c4779f2a102c02b364afacda1300fe33b3a42d2ecb9f85c077a6e0a074a",
+    "src/energy_forecasting/__init__.py": "1f0c6fe4749b67be0f571eb6a14c16a40b90980457cbd790487e0ceeaa855975",
+    "src/energy_forecasting/conformal.py": "a45241631e3d19d0067cdc978280975051bee9cfbd86249c236fcb49e1fa5c25",
+    "src/energy_forecasting/data.py": "01873945b4f9e47293c99ba7f74cbd775491dd5f2bfb4be0784fe68a57ef4b1a",
+    "src/energy_forecasting/experiment.py": "b6c3155725a137ffc6b6410f968fbee46149639020d7103df2e7ec0e231cd8f2",
+    "src/energy_forecasting/metrics.py": "475b87ff9676ce2d3212a43b4bf71733c1e972e4ffe7a5e0d7a7791c949a0117",
+    "src/energy_forecasting/models.py": "97be9fde6347e8c96ca26446703fabf204f13b9c82278dd4296eb5f0ca1c9e4f",
+    "src/energy_forecasting/output.py": "de81b8e73cb14813430542d68eca713837fad7c3a23d72b9106e95e612abfd50",
+    "tests/test_pipeline.py": "b4fa9d37fb5c31b6b26f32cb6a8540ca37ac9ce29aedd7545b6c39028116db38",
+    "tests/test_verification.py": "fb500e637232dfb33e8914f233683b8bc36f6754db4f7ca323e10a73dccabcf5"
+  },
+  "runs": {
+    "baseline": {
+      "seed": 20260817,
+      "n_calibration": 1968,
+      "n_test": 1992,
+      "window_per_horizon": 30,
+      "fixed_gamma": 0.0,
+      "adaptive_gamma": 0.015,
+      "same_raw_predictions_and_initial_score_buffer": true,
+      "max_raw_quantile_difference_against_saved": 0.0,
+      "raw_quantiles_bitwise_match_saved": true,
+      "max_adaptive_bound_difference_against_saved": 0.0,
+      "data_fingerprint": "6d446b5560d6427574969caeb1b861aaebca30923fefa6093931b7700907e495",
+      "reference_forecast_sha256": "6901c84f413ba1375fd8096c3c4910c2346d479a7ff18274832c2d27aba8472b",
+      "reference_manifest_sha256": "50f659f69e81eea0eb644cc733878f3887e14d90e45d2d063c09b06773119747",
+      "split_issue_days": {
+        "train": 247,
+        "calibration": 82,
+        "test": 83
+      },
+      "output_sha256": {
+        "calibration_raw_forecasts.csv": "efd18e2816f107db5d8657a224f67355d708c264403aea188e8bfcfd8bbecfa6",
+        "executed_config.yaml": "75ab6d80b92c0129d7b428cbecb729285c30ace4c88f2dc11cb79fc64113f89e",
+        "rolling_control_intervals.csv": "e3f29a5a797d1d0d608d6100328ab6f84972c1b2b868c9825ab6f9db42705b7b",
+        "test_raw_forecasts.csv": "8be5422cbbb4289b07009a88f9fe001f89a6b69cb94a14c24aeb3ca89beba80a"
+      }
+    },
+    "seed_20260818": {
+      "seed": 20260818,
+      "n_calibration": 1968,
+      "n_test": 1992,
+      "window_per_horizon": 30,
+      "fixed_gamma": 0.0,
+      "adaptive_gamma": 0.015,
+      "same_raw_predictions_and_initial_score_buffer": true,
+      "max_raw_quantile_difference_against_saved": 0.0,
+      "raw_quantiles_bitwise_match_saved": true,
+      "max_adaptive_bound_difference_against_saved": 0.0,
+      "data_fingerprint": "3fe6da652516df24388d320106c79c7489509327d35133cda9397ba72d7125dc",
+      "reference_forecast_sha256": "c8c8278d3a237f55c2169bedc3a857f0e3d07e7098b0c233da9f7e5bc3615d50",
+      "reference_manifest_sha256": "b0870a18071d9a603bc3b65555be29b799ca9f98a4e9b0afcf222c0439b75907",
+      "split_issue_days": {
+        "train": 247,
+        "calibration": 82,
+        "test": 83
+      },
+      "output_sha256": {
+        "calibration_raw_forecasts.csv": "9c69d23d9d1a6b6ccbb764b7a5310f66031ae8d4241fefafaffe608fe05de194",
+        "executed_config.yaml": "837c9c9f415a3c0213bad568463e7f4e67d98cdb3f2d3875b114df302c8907bb",
+        "rolling_control_intervals.csv": "985e18446e84be418cdca634aa54c7a6b08cdc3f1ab81cf3ce244017dc12d5ed",
+        "test_raw_forecasts.csv": "2e7e7278087735e69fe11a3353f1b16716fad300a135c347219043cb688666b9"
+      }
+    },
+    "seed_20260819": {
+      "seed": 20260819,
+      "n_calibration": 1968,
+      "n_test": 1992,
+      "window_per_horizon": 30,
+      "fixed_gamma": 0.0,
+      "adaptive_gamma": 0.015,
+      "same_raw_predictions_and_initial_score_buffer": true,
+      "max_raw_quantile_difference_against_saved": 0.0,
+      "raw_quantiles_bitwise_match_saved": true,
+      "max_adaptive_bound_difference_against_saved": 0.0,
+      "data_fingerprint": "b63a09eda992115ea204aef704b4b55d27d414f1cd55d3b5f0de0479d8a5fd29",
+      "reference_forecast_sha256": "f2342bdf4832c3a93abbae9f7cbc7f9f8a76a2322e377ab9c984af41799e06cc",
+      "reference_manifest_sha256": "0b5e824a5d95a86ef4f6e3a0e67a43da3f5a6546ea8a6d6ca2597a6bce189826",
+      "split_issue_days": {
+        "train": 247,
+        "calibration": 82,
+        "test": 83
+      },
+      "output_sha256": {
+        "calibration_raw_forecasts.csv": "693f366c1638a0a83c8490c2524fa7ef7e26ef341405cbb185316845574de614",
+        "executed_config.yaml": "9286fab0c0826cc58acbe7a4df88e066edc13bad9d5e49a2137021f51912427f",
+        "rolling_control_intervals.csv": "41e21f482307cd620d55b74eeff9645f38d862bc7ac404166ae033dbbda9c569",
+        "test_raw_forecasts.csv": "3dc29f187429ea61f59b379dd19e169bceb4dcf678c6cc2ec9c6e5438f0e5edc"
+      }
+    }
+  }
+}

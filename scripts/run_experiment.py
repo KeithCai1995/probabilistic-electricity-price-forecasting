@@ -17,11 +17,13 @@ def main() -> None:
     parser.add_argument(
         "--output-root",
         type=Path,
-        help="Optional separate directory for data and outputs; prevents one run overwriting another.",
+        required=True,
+        help="Dedicated directory for this run; repository roots and preserved references are protected.",
     )
+    parser.add_argument("--overwrite", action="store_true", help="Explicitly allow replacing run-owned outputs in a nonempty run directory")
     args = parser.parse_args()
-    output_root = args.output_root.resolve() if args.output_root else ROOT
-    result = run(args.config, output_root)
+    output_root = args.output_root.resolve()
+    result = run(args.config, output_root, overwrite=args.overwrite)
     print(result["summary"].to_string(index=False))
     print(f"\nArtifacts written under: {output_root / 'outputs'}")
 

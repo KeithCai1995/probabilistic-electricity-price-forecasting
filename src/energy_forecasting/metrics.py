@@ -40,5 +40,5 @@ def approximate_crps(y: np.ndarray, predictions: pd.DataFrame, quantiles: list[f
 
 def rolling_coverage(y: pd.Series, lower: pd.Series, upper: pd.Series, window: int) -> pd.Series:
     hit = ((y >= lower) & (y <= upper)).astype(float)
-    return hit.rolling(window=window, min_periods=max(24, window // 4)).mean()
+    return hit.rolling(window=window, min_periods=min(window, max(24, window // 4))).mean()
 
