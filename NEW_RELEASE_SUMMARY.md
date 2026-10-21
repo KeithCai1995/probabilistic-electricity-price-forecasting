@@ -4,6 +4,15 @@ This note describes the reference package prepared on 2026-10-18. Earlier
 v1.0.2 records are retained separately. See [project history](PROJECT_HISTORY.md)
 for the version timeline, later local reproduction and sources.
 
+**21 October technical update:** see the independent
+[rolling-control supplement](corrected_v110/supplementary_20261021/README.md).
+The gamma=0 fixed-alpha rolling control slightly improves interval score over
+gamma=.015 for each of the three existing baseline seeds, so the earlier wrapper
+comparison does not demonstrate an isolated alpha-feedback benefit. The expanded
+27-test local suite, configuration-aware plotting/backtests and a lightweight
+configured CI workflow are documented in README. A fresh default full run matched
+all six original baseline CSVs byte-for-byte; reference evidence was not replaced.
+
 The conformal correction now selects the exact discrete rank
 `ceil((n+1)*(1-alpha))`, using positive infinity when the rank exceeds `n`.
 Invalid/nonfinite inputs are rejected, decimal rank boundaries are protected,

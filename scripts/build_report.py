@@ -19,7 +19,7 @@ def main():
     root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser()
     parser.add_argument('--source', type=Path, default=root/'report/report_v110.md')
-    parser.add_argument('--output', type=Path, default=root/'report/Corrected_Technical_Report_v110.pdf')
+    parser.add_argument('--output', type=Path, default=root/'report/Haorui_Cai_Forecasting_Report_v110.pdf')
     args = parser.parse_args()
     fonts = Path(reportlab.__file__).parent/'fonts'
     pdfmetrics.registerFont(TTFont('Portfolio', str(fonts/'Vera.ttf')))
@@ -74,7 +74,7 @@ def main():
         story.append(Paragraph(fmt(text),styles[key]));i+=1
     def footer(canvas,doc):
         canvas.setFont('Portfolio',7.5)
-        canvas.drawString(54,27,'18 October 2026 | Corrected technical report | Local v1.1.0')
+        canvas.drawString(54,27,'21 October 2026 | Technical update | v1.1.0')
         canvas.drawRightString(558,27,str(doc.page))
     args.output.parent.mkdir(parents=True,exist_ok=True)
     SimpleDocTemplate(str(args.output),pagesize=letter,leftMargin=54,rightMargin=54,topMargin=42,bottomMargin=44,

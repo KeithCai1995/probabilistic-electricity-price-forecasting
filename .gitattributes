@@ -1,5 +1,7 @@
 # Preserve exact source and artifact bytes used by reproducibility hashes.
-* -text
+* -text whitespace=cr-at-eol
+
+# Accept CRLF terminators without changing bytes; real trailing blanks still fail.
 
 # Reports and plots are binary, not text diffs or merge candidates.
 *.pdf binary

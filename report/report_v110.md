@@ -2,6 +2,8 @@
 
 Corrected local edition v1.1.0 — 18 October 2026
 
+Technical verification and supplementary control update — 21 October 2026
+
 **SIMULATED BENCHMARK — NOT FIELD DATA.** This report concerns a research-training
 portfolio, not a named electricity market, employer, Tarim Oilfield or trading system.
 This report documents the correction, automated tests and saved reference
@@ -123,6 +125,30 @@ a limited simulator check, not a confidence interval for real-market coverage.
 Changing the seed also changes the model's random seed; this experiment does not
 separate model stochasticity from simulated-market variation.
 
+<!-- PAGE -->
+
+## Supplementary fixed-alpha rolling control — 21 October
+
+The static by-horizon method fixes a correction using all 82 calibration days;
+the adaptive wrapper both rolls a 30-score buffer and updates alpha. A new
+gamma=0 control retains the identical rolling buffers, raw quantiles and alpha
+target .20, isolating feedback from the rolling-window effect. Each of the three
+original baseline models was reconstructed once, and its test raw quantiles and
+adaptive bounds matched the preserved reference exactly before comparison.
+
+| Seed | Fixed coverage | Fixed width | Fixed score | Adaptive score |
+| --- | ---: | ---: | ---: | ---: |
+| 20260817 | .820281 | 21.768209 | 30.592811 | 30.727504 |
+| 20260818 | .822289 | 22.472269 | 32.070489 | 32.236669 |
+| 20260819 | .825803 | 22.681780 | 32.514927 | 32.780810 |
+
+Feedback narrows widths by .208–.493 EUR/MWh and moves coverage nearer .80, but
+worsens interval score in all three seeds by .135–.266. These data do not establish
+an interval-score advantage for alpha feedback alone. The earlier adaptive/static
+comparison evaluates the combined wrapper. New shared raw frames, interval paths,
+metrics and actual execution records are in `corrected_v110/supplementary_20261021/`;
+this is not a new untouched test set or a rewrite of the earlier evidence.
+
 ## Infinity and clipping are part of the method boundary
 
 The update uses `alpha_next = clip(alpha + gamma*(.20-error), .01, .99)` and a
@@ -138,6 +164,18 @@ This observation does not justify replacing future infinities with finite caps.
 If an unbounded interval occurs, unconditional mean width and interval score
 remain infinite. Explicit `finite_only_mean_width` and `finite_only_interval_score`
 columns describe the finite subset only; they do not replace full-sample metrics.
+
+## Configuration and verification update
+
+The 21 October suite passes 27 tests, adding a genuine small-model complete
+pipeline smoke at q05/q95 and a 90% target, configured plot/backtest checks,
+future-price/outcome perturbations, a fixed-alpha rolling control and protected
+output paths. A fresh complete default run reproduced all six baseline CSVs
+byte-for-byte, including the downstream P2 input. Separate read-only scripts check
+the five reference outputs and replay all three supplementary controls. A new
+four-environment lightweight CI workflow is configured; local completion is not
+evidence that its future GitHub jobs have passed. These engineering checks are
+not new evidence of real-market validity or research novelty.
 
 <!-- PAGE -->
 
@@ -232,7 +270,7 @@ was redirected inside this workspace, and the corrected local `src` took priorit
 over the original environment's editable installation. The reference experiments
 used a local source copy without writing to the Desktop or Downloads artifacts.
 
-The suite passes 16 tests, including exact discrete indices, alpha boundaries,
+The original reference suite passed 16 tests, including exact discrete indices, alpha boundaries,
 ties, nonfinite/invalid inputs, infinity propagation, infinite scores and explicit
 conditional diagnostics. A live chart regression includes the old raw .547691
 point. Existing checks cover chronological separation, forbidden future features,

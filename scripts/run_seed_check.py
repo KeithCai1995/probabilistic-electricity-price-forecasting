@@ -9,8 +9,6 @@ import argparse
 import sys
 from pathlib import Path
 
-import yaml
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from energy_forecasting.experiment import run
@@ -20,13 +18,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--overwrite", action="store_true", help="Explicitly allow replacing outputs in a nonempty run directory")
     args = parser.parse_args()
-    config = yaml.safe_load((ROOT / "configs/base.yaml").read_text(encoding="utf-8"))
-    config["seed"] = args.seed
-    args.output_root.mkdir(parents=True, exist_ok=True)
-    config_path = args.output_root / "executed_config.yaml"
-    config_path.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
-    result = run(config_path, args.output_root)
+    result = run(ROOT / "configs/base.yaml", args.output_root, seed_override=args.seed, overwrite=args.overwrite)
     print(result["summary"].to_string(index=False))
     print(f"Artifacts written under: {args.output_root / 'outputs'}")
 

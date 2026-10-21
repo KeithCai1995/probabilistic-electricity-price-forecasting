@@ -19,7 +19,7 @@ The original Windows Python environment was used read-only, with bytecode disabl
 location, interpreter and package versions are recorded in release verification.
 No dependency was installed into the original environment.
 
-The current suite passes 16 tests. Evidence: `corrected_v110/logs/unit_tests.txt`.
+The 18 October reference suite passed 16 tests. Evidence: `corrected_v110/logs/unit_tests.txt`.
 It includes exact rank/index cases, ties, invalid alpha/scores, empty/non-vector
 scores, unattainable ranks, decimal boundaries and adjacent alphas, adaptive
 infinite-bound propagation, infinite metrics, conditional diagnostics, the
@@ -51,3 +51,27 @@ summary tables are recorded by `scripts/summarize_release.py`. The current metad
 verification is dated separately from the reference experiments and does not
 represent a new model run. A SHA match audits
 these local bytes; it does not establish scientific validity.
+
+## Technical update — 21 October 2026
+
+The expanded local suite passes 27 tests, adding nondefault configuration/plot
+checks, a real-model complete small pipeline smoke, future-price and future-y
+perturbations, a gamma=0 rolling-buffer check, and output-directory safeguards.
+The new lightweight CI workflow is configured, not represented as an already
+completed GitHub run. Read-only `scripts/check_saved_outputs.py` checks all five
+preserved reference runs; `scripts/check_rolling_control.py` replays the new
+controls from shared saved raw calibration and test frames without model fitting.
+
+A complete fresh default run, including all rolling folds and six figures,
+reproduced the reference simulated data, forecast CSV and four metric tables
+byte-for-byte. The forecast SHA256 remains
+`6901c84f413ba1375fd8096c3c4910c2346d479a7ff18274832c2d27aba8472b`.
+Local verification logs and fresh outputs are kept in ignored
+`local_runs/verification_20261021/`; the original reference files were not replaced.
+
+The independently dated supplementary fixed-alpha study is at
+`corrected_v110/supplementary_20261021/`. All three reconstructed raw forecast sets
+and original adaptive bounds matched their preserved references exactly before
+comparison. Its results, inputs and source hashes belong to that supplementary
+execution, not the historical reference logs. Existing dated source-hash records
+are retained as execution snapshots rather than silently refreshed to later code.

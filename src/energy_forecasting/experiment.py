@@ -17,6 +17,7 @@ from .conformal import adaptive_cqr, groupwise_static_cqr, static_cqr
 from .data import build_day_ahead_examples, chronological_split, dataframe_fingerprint, simulate_hourly_market
 from .metrics import approximate_crps, interval_metrics, pinball_loss, rolling_coverage
 from .models import QuantileEnsemble, ood_score, quantile_column
+from .output import prepare_output_root
 from . import __version__
 
 
@@ -51,13 +52,48 @@ def _save_figure(fig: plt.Figure, path: Path) -> None:
     plt.close(fig)
 
 
-def run(config_path: str | Path, root: str | Path) -> dict:
-    root = Path(root)
-    config = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
-    for folder in [root / "outputs" / "figures", root / "outputs" / "tables", root / "data"]:
-        folder.mkdir(parents=True, exist_ok=True)
-    _configure_plotting()
+def validate_config(config: dict) -> None:
+    """Validate settings shared by the main and rolling-origin evaluations."""
+    quantiles = [float(q) for q in config["model"]["quantiles"]]
+    if quantiles != sorted(set(quantiles)) or not all(0.0 < q < 1.0 for q in quantiles):
+        raise ValueError("Model quantiles must be unique, increasing values strictly between 0 and 1")
+    columns = [quantile_column(q) for q in quantiles]
+    if len(columns) != len(set(columns)):
+        raise ValueError("Quantiles must have distinct percentage-column names")
+    lower = float(config["calibration"]["lower_quantile"])
+    upper = float(config["calibration"]["upper_quantile"])
+    if not lower < 0.5 < upper or not {lower, 0.5, upper}.issubset(quantiles):
+        raise ValueError("Configured lower, median and upper quantiles must be present in the model grid")
+    alpha = float(config["calibration"]["target_miscoverage"])
+    gamma = float(config["calibration"]["adaptive_gamma"])
+    if not np.isfinite(alpha) or not 0.0 < alpha < 1.0:
+        raise ValueError("target_miscoverage must lie strictly between 0 and 1")
+    if not np.isfinite(gamma) or gamma < 0.0:
+        raise ValueError("adaptive_gamma must be finite and nonnegative")
+    if int(config["calibration"]["adaptive_window_per_horizon"]) < 1:
+        raise ValueError("adaptive_window_per_horizon must be positive")
+    train_fraction = float(config["split"]["train_fraction"])
+    calibration_fraction = float(config["split"]["calibration_fraction"])
+    if not 0.0 < train_fraction < 1.0 or not 0.0 < calibration_fraction < 1.0 or train_fraction + calibration_fraction >= 1.0:
+        raise ValueError("Positive train/calibration fractions must leave a positive test fraction")
+    evaluation = config["evaluation"]
+    if int(evaluation["rolling_origin_folds"]) < 1 or int(evaluation["rolling_origin_test_days"]) < 1:
+        raise ValueError("Rolling-origin fold count and test days must be positive")
+    if int(evaluation.get("rolling_origin_calibration_days", 42)) < 1:
+        raise ValueError("Rolling-origin calibration days must be positive")
+    if int(evaluation["rolling_coverage_window_hours"]) < 1:
+        raise ValueError("Rolling coverage window must be positive")
+    if not 0.0 < float(evaluation["extreme_fraction"]) < 0.5:
+        raise ValueError("extreme_fraction must lie strictly between 0 and 0.5")
 
+
+def fit_forecast_frames(config: dict):
+    """Fit once and expose shared calibration/test raw forecasts for controls.
+
+    This does not write outputs. The same frames can feed multiple calibration
+    wrappers without retraining or changing their raw quantile inputs.
+    """
+    validate_config(config)
     hourly = simulate_hourly_market(
         n_days=int(config["data"]["n_days"]),
         start=config["data"]["start"],
@@ -84,6 +120,23 @@ def run(config_path: str | Path, root: str | Path) -> dict:
 
     calibration = pd.concat([splits.calibration.reset_index(drop=True), pred_cal.reset_index(drop=True)], axis=1)
     test = pd.concat([splits.test.reset_index(drop=True), pred_test.reset_index(drop=True)], axis=1)
+    return hourly, splits, calibration, test
+
+
+def run(config_path: str | Path, root: str | Path, *, overwrite: bool = False, seed_override: int | None = None) -> dict:
+    config = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
+    if seed_override is not None:
+        config["seed"] = int(seed_override)
+    validate_config(config)
+    root = prepare_output_root(root, overwrite=overwrite)
+    for folder in [root / "outputs" / "figures", root / "outputs" / "tables", root / "data"]:
+        folder.mkdir(parents=True, exist_ok=True)
+    if seed_override is not None:
+        (root / "executed_config.yaml").write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+    _configure_plotting()
+    hourly, splits, calibration, test = fit_forecast_frames(config)
+    examples = pd.concat([splits.train, splits.calibration, splits.test], ignore_index=True)
+    quantiles = [float(q) for q in config["model"]["quantiles"]]
     lower_col = quantile_column(float(config["calibration"]["lower_quantile"]))
     upper_col = quantile_column(float(config["calibration"]["upper_quantile"]))
     alpha = float(config["calibration"]["target_miscoverage"])
@@ -202,11 +255,12 @@ def run(config_path: str | Path, root: str | Path) -> dict:
     test[export_columns].to_csv(root / "outputs" / "forecast_quantiles_test.csv", index=False)
     hourly.to_csv(root / "data" / "simulated_hourly_market.csv", index=False)
 
-    _plot_forecast_window(test, root / "outputs" / "figures" / "figure_1_forecast_window.png")
-    _plot_coverage_width(summary, root / "outputs" / "figures" / "figure_2_coverage_width.png")
-    _plot_rolling_coverage(test, int(config["evaluation"]["rolling_coverage_window_hours"]), root / "outputs" / "figures" / "figure_3_rolling_coverage.png")
+    target_coverage = 1.0 - alpha
+    _plot_forecast_window(test, root / "outputs" / "figures" / "figure_1_forecast_window.png", target_coverage=target_coverage)
+    _plot_coverage_width(summary, root / "outputs" / "figures" / "figure_2_coverage_width.png", target_coverage=target_coverage)
+    _plot_rolling_coverage(test, int(config["evaluation"]["rolling_coverage_window_hours"]), root / "outputs" / "figures" / "figure_3_rolling_coverage.png", lower_col=lower_col, upper_col=upper_col, target_coverage=target_coverage)
     _plot_reliability(reliability, root / "outputs" / "figures" / "figure_4_quantile_reliability.png")
-    _plot_subset_coverage(subset, root / "outputs" / "figures" / "figure_5_subset_coverage.png")
+    _plot_subset_coverage(subset, root / "outputs" / "figures" / "figure_5_subset_coverage.png", target_coverage=target_coverage)
     _plot_ood(test, root / "outputs" / "figures" / "figure_6_ood_diagnostic.png")
 
     manifest = {
@@ -258,17 +312,23 @@ def _rolling_origin_backtest(examples: pd.DataFrame, config: dict) -> pd.DataFra
     rows: list[dict[str, float | int | str]] = []
     model_config = config["model"]
     alpha = float(config["calibration"]["target_miscoverage"])
+    lower_quantile = float(config["calibration"]["lower_quantile"])
+    upper_quantile = float(config["calibration"]["upper_quantile"])
+    lower_col, upper_col = quantile_column(lower_quantile), quantile_column(upper_quantile)
+    calibration_length = int(config["evaluation"].get("rolling_origin_calibration_days", 42))
 
     for fold, origin in enumerate(origins, start=1):
         train_days = days[:origin]
         test_fold_days = days[origin : origin + test_days]
-        calibration_days = train_days[-42:]
-        fit_days = train_days[:-42]
+        calibration_days = train_days[-calibration_length:]
+        fit_days = train_days[:-calibration_length]
+        if len(fit_days) == 0 or len(test_fold_days) != test_days:
+            raise ValueError("Rolling-origin configuration leaves insufficient fit, calibration or test days")
         fit_frame = examples[examples["issue_day"].isin(fit_days)].reset_index(drop=True)
         calibration_frame = examples[examples["issue_day"].isin(calibration_days)].reset_index(drop=True)
         test_frame = examples[examples["issue_day"].isin(test_fold_days)].reset_index(drop=True)
         fold_model = QuantileEnsemble(
-            quantiles=[0.10, 0.50, 0.90],
+            quantiles=[lower_quantile, 0.50, upper_quantile],
             backend=model_config["backend"],
             params={k: v for k, v in model_config.items() if k not in {"backend", "quantiles"}},
             seed=int(config["seed"]) + fold,
@@ -277,10 +337,10 @@ def _rolling_origin_backtest(examples: pd.DataFrame, config: dict) -> pd.DataFra
         test_pred = fold_model.predict(test_frame)
         pooled_low, pooled_high, _ = static_cqr(
             calibration_frame["price_eur_mwh"].to_numpy(),
-            calibration_pred["q10"].to_numpy(),
-            calibration_pred["q90"].to_numpy(),
-            test_pred["q10"].to_numpy(),
-            test_pred["q90"].to_numpy(),
+            calibration_pred[lower_col].to_numpy(),
+            calibration_pred[upper_col].to_numpy(),
+            test_pred[lower_col].to_numpy(),
+            test_pred[upper_col].to_numpy(),
             alpha,
         )
 
@@ -295,8 +355,8 @@ def _rolling_origin_backtest(examples: pd.DataFrame, config: dict) -> pd.DataFra
         horizon_low, horizon_high, _ = groupwise_static_cqr(
             calibration_eval,
             test_eval,
-            "q10",
-            "q90",
+            lower_col,
+            upper_col,
             "price_eur_mwh",
             "horizon",
             alpha,
@@ -304,8 +364,8 @@ def _rolling_origin_backtest(examples: pd.DataFrame, config: dict) -> pd.DataFra
         adaptive_low, adaptive_high, _, _ = adaptive_cqr(
             calibration_eval,
             test_eval,
-            "q10",
-            "q90",
+            lower_col,
+            upper_col,
             "price_eur_mwh",
             "horizon",
             alpha,
@@ -315,7 +375,7 @@ def _rolling_origin_backtest(examples: pd.DataFrame, config: dict) -> pd.DataFra
 
         y = test_frame["price_eur_mwh"].to_numpy()
         fold_intervals = {
-            "Raw quantiles": (test_pred["q10"].to_numpy(), test_pred["q90"].to_numpy()),
+            "Raw quantiles": (test_pred[lower_col].to_numpy(), test_pred[upper_col].to_numpy()),
             "Static CQR (pooled)": (pooled_low, pooled_high),
             "Static CQR (by horizon)": (horizon_low, horizon_high),
             "Adaptive CQR": (adaptive_low, adaptive_high),
@@ -336,11 +396,11 @@ def _rolling_origin_backtest(examples: pd.DataFrame, config: dict) -> pd.DataFra
     return pd.DataFrame(rows)
 
 
-def _plot_forecast_window(test: pd.DataFrame, path: Path) -> None:
+def _plot_forecast_window(test: pd.DataFrame, path: Path, *, target_coverage: float = 0.8) -> None:
     frame = test.sort_values("target_time").iloc[: 14 * 24]
     x = pd.to_datetime(frame["target_time"]).dt.tz_localize(None)
     fig, ax = plt.subplots(figsize=(9.2, 3.5))
-    ax.fill_between(x, frame["adaptive_lower"], frame["adaptive_upper"], color=COLORS["teal"], alpha=0.20, label="Adaptive 80% interval")
+    ax.fill_between(x, frame["adaptive_lower"], frame["adaptive_upper"], color=COLORS["teal"], alpha=0.20, label=f"Adaptive {100 * target_coverage:g}% interval")
     ax.plot(x, frame["price_eur_mwh"], color=COLORS["navy"], lw=1.0, label="Realised price")
     ax.plot(x, frame["q50"], color=COLORS["gold"], lw=1.0, label="Median forecast")
     ax.set(title="Two-week out-of-sample forecast window", ylabel="EUR/MWh", xlabel="Target time")
@@ -348,7 +408,7 @@ def _plot_forecast_window(test: pd.DataFrame, path: Path) -> None:
     _save_figure(fig, path)
 
 
-def _plot_coverage_width(summary: pd.DataFrame, path: Path) -> None:
+def _plot_coverage_width(summary: pd.DataFrame, path: Path, *, target_coverage: float = 0.8) -> None:
     fig, ax = plt.subplots(figsize=(6.4, 3.8))
     method_colors = {
         "Raw quantiles": COLORS["gray"],
@@ -363,25 +423,25 @@ def _plot_coverage_width(summary: pd.DataFrame, path: Path) -> None:
         else:
             ax.plot([], [], color=color, marker="o", ls="", label=f"{row['method']} (mean width = infinity)")
             ax.text(0.02, 0.96, f"{row['method']}: coverage {row['coverage']:.3f}; infinite mean width", transform=ax.transAxes, va="top", color=color)
-    ax.axhline(0.80, color=COLORS["red"], ls="--", lw=1, label="80% target")
+    ax.axhline(target_coverage, color=COLORS["red"], ls="--", lw=1, label=f"{100 * target_coverage:g}% target")
     ax.set(xlabel="Mean interval width (EUR/MWh)", ylabel="Empirical coverage", title="Reliability-sharpness trade-off")
     ax.set_ylim(0.0, 1.02)
     ax.legend()
     _save_figure(fig, path)
 
 
-def _plot_rolling_coverage(test: pd.DataFrame, window: int, path: Path) -> None:
+def _plot_rolling_coverage(test: pd.DataFrame, window: int, path: Path, *, lower_col: str = "q10", upper_col: str = "q90", target_coverage: float = 0.8) -> None:
     frame = test.sort_values("target_time").reset_index(drop=True)
     fig, ax = plt.subplots(figsize=(9.2, 3.4))
     for label, low, high, color in [
-        ("Raw", "q10", "q90", COLORS["gray"]),
+        ("Raw", lower_col, upper_col, COLORS["gray"]),
         ("Static pooled", "static_lower", "static_upper", COLORS["blue"]),
         ("Static by horizon", "horizon_static_lower", "horizon_static_upper", COLORS["gold"]),
         ("Adaptive CQR", "adaptive_lower", "adaptive_upper", COLORS["teal"]),
     ]:
         curve = rolling_coverage(frame["price_eur_mwh"], frame[low], frame[high], window)
         ax.plot(pd.to_datetime(frame["target_time"]).dt.tz_localize(None), curve, lw=1.1, label=label, color=color)
-    ax.axhline(0.80, color=COLORS["red"], ls="--", lw=1)
+    ax.axhline(target_coverage, color=COLORS["red"], ls="--", lw=1)
     ax.set(title=f"Rolling empirical coverage ({window}-hour window)", ylabel="Coverage", xlabel="Target time", ylim=(0.45, 1.02))
     ax.legend(ncol=2)
     _save_figure(fig, path)
@@ -395,7 +455,7 @@ def _plot_reliability(reliability: pd.DataFrame, path: Path) -> None:
     _save_figure(fig, path)
 
 
-def _plot_subset_coverage(subset: pd.DataFrame, path: Path) -> None:
+def _plot_subset_coverage(subset: pd.DataFrame, path: Path, *, target_coverage: float = 0.8) -> None:
     pivot = subset.pivot(index="subset", columns="method", values="coverage")
     method_order = [
         "Raw quantiles",
@@ -410,7 +470,7 @@ def _plot_subset_coverage(subset: pd.DataFrame, path: Path) -> None:
         ax=ax,
         color=[COLORS["gray"], COLORS["blue"], COLORS["gold"], COLORS["teal"]],
     )
-    ax.axhline(0.80, color=COLORS["red"], ls="--", lw=1)
+    ax.axhline(target_coverage, color=COLORS["red"], ls="--", lw=1)
     ax.set(title="Coverage by stress-test subset", ylabel="Coverage", xlabel="", ylim=(0, 1.02))
     ax.tick_params(axis="x", rotation=20)
     ax.legend(title="", loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=8)
