@@ -26,6 +26,12 @@ material predates that Git history. The original statement is preserved at
   `corrected_v110/supplementary_20261021/`; prior evidence and P2 input are unchanged.
   The active PDF filename is `report/Haorui_Cai_Forecasting_Report_v110.pdf`.
 
+- **21 October 2026 - presentation follow-up:** redacted local workspace prefixes
+  with an explicit `<WORKSPACE>` placeholder, without changing recorded dates,
+  hashes or numerical results. Expanded the rolling-coverage axis, added a live
+  plot regression (28 tests in total), and redrew five current charts from saved
+  forecasts without refitting. See `PRESENTATION_UPDATE_20261021.md`.
+
 ## Sources
 
 Initial code and reference analyses were supplied. Method sources are credited in

@@ -52,6 +52,6 @@
       "historical/v102/REPRODUCIBILITY_RECORD.md",
       "historical/v102/report/P1_Technical_Report_Haorui_Cai.pdf"
     ],
-    "source_root": "C:\\Users\\40610\\Documents\\Codex\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1"
+    "source_root": "<WORKSPACE>\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1"
   }
 }

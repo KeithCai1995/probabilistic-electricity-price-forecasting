@@ -5,11 +5,11 @@
   "version": "1.1.0",
   "python": "3.13.15",
   "interpreter": "C:\\Users\\40610\\Desktop\\\u535a\u58eb\u7533\u8bf7\u6750\u6599\\\u4f5c\u54c1\u96c6\\P1_WORKING_REPOSITORY\\.venv\\Scripts\\python.exe",
-  "import_location": "C:\\Users\\40610\\Documents\\Codex\\Publish_v110_20261018\\P1\\src\\energy_forecasting\\__init__.py",
+  "import_location": "<WORKSPACE>\\Publish_v110_20261018\\P1\\src\\energy_forecasting\\__init__.py",
   "source_import_is_this_copy": true,
   "bytecode_disabled": true,
   "omp_num_threads": "2",
-  "plot_cache": "C:/Users/40610/Documents/Codex/Publish_v110_20261018/Plot_Cache",
+  "plot_cache": "<WORKSPACE>/Publish_v110_20261018/Plot_Cache",
   "raw_quantiles_exact_match_old_windows_baseline": true,
   "baseline_data_fingerprint_matches_old_windows": true,
   "source_syntax_validated_count": 11,
@@ -67,7 +67,7 @@
     "status": "checked_against_read_only_original",
     "checked_files": 73,
     "mismatches": [],
-    "source_root": "C:\\Users\\40610\\Documents\\Codex\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1",
+    "source_root": "<WORKSPACE>\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1",
     "validation_date": "2026-10-18",
     "scope": "Pre-cleanup snapshot validation; not a claim about current edited documentation or report presentation."
   },
@@ -82,6 +82,6 @@
       "historical/v102/REPRODUCIBILITY_RECORD.md",
       "historical/v102/report/P1_Technical_Report_Haorui_Cai.pdf"
     ],
-    "source_root": "C:\\Users\\40610\\Documents\\Codex\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1"
+    "source_root": "<WORKSPACE>\\2026-10-12\\tools-numpy-pandas-scipy-highs-scikit\\work\\pv18\\p1"
   }
 }
