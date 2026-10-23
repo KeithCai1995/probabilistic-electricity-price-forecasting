@@ -1,11 +1,11 @@
 # P1 — Electricity-price forecasting under regime shift — corrected v1.1.0
 
-**SIMULATED BENCHMARK — NOT FIELD DATA.** These are research-training experiments,
-not employer, Tarim Oilfield, named-market or trading-system results.
+**SIMULATED BENCHMARK — NOT FIELD DATA.**
 
-The 2026-10-18 corrected local edition fixes the conformal order statistic and
-re-runs the baseline, two gamma sensitivities and three baseline simulation seeds.
-Reference runs and earlier reproduction records are kept separately. See
+This project compares quantile forecasts, static CQR and rolling adaptive CQR
+for electricity prices under regime shifts. The corrected v1.1.0 runs, prepared
+on 18 October 2026, include a baseline, two gamma sensitivities and three baseline
+simulation seeds. See
 [project history](PROJECT_HISTORY.md) for the version timeline and source note.
 
 ## Current result
@@ -13,43 +13,35 @@ Reference runs and earlier reproduction records are kept separately. See
 At seed 20260817, gamma 0.015, adaptive marginal coverage is **0.806225**, mean
 interval width **21.274739 EUR/MWh**, and interval score **30.727504**. The pooled
 static comparator covers 0.924197 with width 27.580914; raw coverage is 0.556225.
-The 80% target is descriptive here: this clipped, rolling adaptive implementation
-does not establish a coverage theorem under arbitrary temporal dependence.
+The target is 80% hourly marginal coverage. Lower interval score is better.
 
 The corrected rank is `k = ceil((n+1)*(1-alpha))`, selecting sorted score `k-1`.
-When `k > n`, the correction is positive infinity rather than the largest finite
-score. Nonfinite scores and invalid alpha values are rejected. All five completed
-runs had zero unbounded final-test intervals; the general boundary is nevertheless
-tested and retained. Tables include unconditional means, unbounded fractions and
-clearly named `finite_only_*` conditional diagnostics. Infinite means remain
-infinite. Decimal alpha boundaries avoid accidental extra ranks from binary
-floating-point arithmetic.
+When `k > n`, the correction is positive infinity. Nonfinite scores and invalid
+alpha values are rejected, and decimal rank boundaries avoid floating-point
+rounding errors. All five reference runs had zero unbounded final-test intervals.
+The metric tables retain infinite full-sample means where needed and show
+`finite_only_*` diagnostics separately.
 
 Read [the corrected report](report/report_v110.md),
 [release summary](NEW_RELEASE_SUMMARY.md), and
-[reproduction record](REPRODUCIBILITY_RECORD.md) for the evidence and limits.
+[reproduction record](REPRODUCIBILITY_RECORD.md) for the experiment details.
 
-## 21 October supplementary control and verification update
+## Rolling-window control
 
 The [fixed-alpha rolling control](corrected_v110/supplementary_20261021/README.md)
 isolates alpha feedback from the shared 30-score rolling window. Across the three
 existing seeds, gamma=0 gives coverage .820281–.825803 and slightly better interval
 scores than gamma=.015. Feedback produces narrower intervals with coverage nearer
-.80, but does not improve interval score here. The earlier adaptive-versus-static
-comparison is a comparison of combined wrappers, not proof of an alpha-feedback
-benefit. Original reference outputs and the downstream P2 forecast remain unchanged.
-
-The current local suite has 28 passing tests, including a real-model nondefault
-q05/q95, 90%-target pipeline smoke, future-information perturbations, fixed-alpha
-rolling behavior and output protection. A lightweight workflow is configured for
-Ubuntu/Windows with Python 3.11/3.13; this local update does not itself establish
-that the new workflow has run or passed on GitHub.
+.80, but slightly worsens interval score in each seed. This separates the effect
+of alpha feedback from that of the rolling window: the earlier adaptive-versus-static
+comparison evaluates both together. The supplement was run on 21 October; the
+original reference outputs and downstream P2 forecast are unchanged.
 
 The active PDF is [Haorui_Cai_Forecasting_Report_v110.pdf](report/Haorui_Cai_Forecasting_Report_v110.pdf).
 Optional PDF reproduction uses `python -m pip install -r requirements-report.txt`
 then `python scripts/build_report.py`, which writes that same canonical filename.
-The report source includes page breaks and uses only corrected figures. The PDF
-must be visually checked after rendering; the historical PDF is kept separately.
+The source uses corrected figures and explicit page breaks; check the rendered
+PDF after rebuilding it. The historical PDF is kept separately.
 
 ## Reproduce a new run
 
@@ -71,26 +63,32 @@ python scripts/run_seed_check.py --seed 20260818 --output-root local_runs/v110_s
 python scripts/run_seed_check.py --seed 20260819 --output-root local_runs/v110_seed_20260819
 ```
 
-Scripts explicitly put this checkout's `src` first on the import path, including
-when an existing editable installation points elsewhere. A run manifest records
-software versions, config, data fingerprint, version and execution context.
-The 18 October reference suite had 16 tests; the expanded current suite has 28.
-Use current test output for later runs. Do not overwrite preserved historical records.
+Scripts load this checkout's `src`, even if another editable installation exists.
+Each run records its configuration, software versions and data fingerprint.
 
-Every experiment command now requires a dedicated `--output-root`. Nonempty
-directories are refused unless `--overwrite` is explicitly requested for a
-recognized P1 run (a P1 marker or run manifest); arbitrary existing directories,
-the repository root, source folders and preserved reference directories remain
-protected. Overwrite replaces run-owned output files without deleting unrelated
-files. Prefer a new `local_runs/` directory. `local_runs/` and `.matplotlib/` are
-ignored by Git.
+Use a dedicated `--output-root` for every experiment. Reusing a nonempty directory
+requires `--overwrite` and a recognized P1 marker or run manifest. Arbitrary
+existing directories, the repository root, source folders and preserved reference
+directories remain protected. Overwrite replaces run-owned outputs without
+deleting unrelated files. A new `local_runs/` directory is usually simplest;
+`local_runs/` and `.matplotlib/` are ignored by Git.
 
 The configured lower/upper quantiles and target miscoverage also govern the
 rolling-origin comparator and all plot labels/coverage reference lines. Rolling
 folds retain the original lower/median/upper three-model diagnostic; the default
-q10/q90/80% design is unchanged. A fresh full default rerun reproduced all six
-baseline CSVs byte-for-byte, including the P2 input. Only a small smoke dataset is
-used in CI; full baseline and supplementary model fits are separate local checks.
+q10/q90/80% design is unchanged.
+
+## Verification
+
+The 28 tests cover calibration edge cases, future-information perturbations,
+output protection and a real-model q05/q95, 90%-target pipeline smoke. CI runs on
+Ubuntu and Windows with Python 3.11 and 3.13. A separate full default rerun matched
+all six baseline CSVs byte-for-byte, including the P2 input; CI uses the smaller
+smoke dataset. See [VERIFICATION.md](VERIFICATION.md) for check results and commands.
+
+The presentation update was merged in [PR #5](https://github.com/KeithCai1995/probabilistic-electricity-price-forecasting/pull/5),
+and its [main-branch checks](https://github.com/KeithCai1995/probabilistic-electricity-price-forecasting/actions/runs/39736418760)
+passed for commit `c1ad5d7`; results for other revisions are listed in Actions.
 
 ## Artifact map
 
@@ -102,58 +100,54 @@ used in CI; full baseline and supplementary model fits are separate local checks
 | `corrected_v110/logs/` | Reference execution and test logs, 2026-10-18 |
 | `corrected_v110/supplementary_20261021/` | New fixed-alpha rolling control; shared raw frames and replay checks |
 | `report/report_v110.md` | Active corrected report source |
-| `historical/v102/` | Earlier numerical outputs and historical reports/documentation; presentation wording cleaned |
-| `evidence/` | Earlier reproduction records; numerical artifacts retained and index wording cleaned |
+| `historical/v102/` | Earlier numerical outputs, reports and documentation |
+| `evidence/` | Earlier reproduction records |
 | `PROJECT_HISTORY.md` | Version timeline and source note |
 
-The existing `corrected_v110/release_verification.json` records its dated source
-snapshot. Its recorded hashes, dates and numerical values are not refreshed after
-later source changes; only local path prefixes have been redacted as described
-below. The supplementary
-manifest records the new execution snapshot separately; neither hash record
-substitutes for tests or scientific validity.
+`corrected_v110/release_verification.json` describes its dated source snapshot;
+the supplementary manifest records the later control experiment. Their recorded
+hashes, dates and numerical values are retained when later code changes are made.
 
-The original v1.0.2 PDF is historical and must not be presented as the corrected
-report. The old `experiments/gamma_005` name meant gamma .050. The unchanged original
+The v1.0.2 PDF is the historical report, not the corrected one. The old
+`experiments/gamma_005` name meant gamma .050. The unchanged original
 simulated CSV remains under `data/`; each corrected run also exports its own data.
 The new forecast for downstream P2 is
 `corrected_v110/baseline/outputs/forecast_quantiles_test.csv` (1,992 rows).
 
-## Interpretation boundaries
+## Scope and limitations
 
-The 420-day simulator generates issuance-time forecast proxies by perturbing
-realised simulated covariates; there are no actual publication vintages. Daily
-issue time equals the first target time, so horizon 1 is a nowcast-like case,
-and the historical `day-ahead` label is too strong without an operational timing
-adapter. Lagged prices use only past history; no future backfill is used.
+These are research-training experiments on a 420-day simulator, not employer,
+Tarim Oilfield, named-market or trading-system results. Forecast proxies are noisy
+versions of simulated realised covariates rather than actual publication vintages.
+Lagged prices use past history without future backfill. Daily issue time equals
+the first target time, so horizon 1 is nowcast-like; the historical `day-ahead`
+label needs a genuine prior issuance cutoff before operational use.
 
 Hourly intervals are marginal, not jointly calibrated 24-hour paths. The online
-wrapper uses separate horizon buffers of 30 past scores and clips alpha to
-[.01,.99], changing the usual ACI recursion. Same-horizon updates use earlier
-days' outcomes, under assumed immediate availability. Both the simulator and this
-availability assumption need validation before any operational use.
+wrapper uses 30 past scores per horizon and clips alpha to [.01,.99], which changes
+the original ACI recursion. Coverage under dependent, shifting data is measured
+empirically here, not guaranteed. Updates assume that earlier days' outcomes are
+available immediately; real data delays and revisions would need explicit handling.
 
 The same final block is reused for gamma diagnostics; no new untouched evaluation
-set is created. All 1,992 final-test rows are in the renewable-shift regime, so the
-`Renewable shift` subset repeats `All` and there is no volatile final-test subset.
-Rolling folds cover different periods and show substantial failures. Three seeds
-are a small robustness check, not population inference or proof of superiority.
+set is created. All 1,992 final-test rows are in the renewable-shift regime, so
+`Renewable shift` repeats `All`; there is no volatile final-test subset. Earlier
+rolling folds show substantial coverage failures. Three seeds provide a small
+robustness check rather than population inference or a universal method ranking.
 
-Established quantile-regression and conformal methods underpin the project;
-`RELATED_WORK.md` preserves the literature and contribution boundary. See
+The project uses established quantile-regression and conformal methods, with
+sources in [RELATED_WORK.md](RELATED_WORK.md). See
 [responsible use](RESPONSIBLE_USE.md) for scope and data-use limits.
 
-## Published path redaction and rolling-coverage display
+## Presentation notes
 
-Published logs and metadata use the explicit `<WORKSPACE>` placeholder for the
-original machine-specific workspace prefix. This is a display redaction, not a
-real replacement directory or a claim that the experiments ran elsewhere. Path
-suffixes, recorded dates, source/data hashes and numerical results are retained.
+Published logs and metadata replace the machine-specific prefix with `<WORKSPACE>`.
+This placeholder is not a real directory. Path suffixes, experiment dates,
+source/data hashes and numerical results are retained.
 See [the presentation-update record](PRESENTATION_UPDATE_20261021.md).
 
-The rolling-coverage figure now shows the full 0-1 coverage range, including raw
-coverage below .45. Five corrected reference figures were redrawn from their
-unchanged saved forecasts, without fitting models again. A new live-plot regression
-checks that all finite curve points are visible. The report and earlier logs retain
-their dated 27-test snapshot; the latest suite has 28 tests. This follow-up does not
-claim that a new remote CI run has already passed.
+Five rolling-coverage figures were redrawn from the same saved forecasts to show
+the full 0-1 range, including raw coverage below .45. The live-plot regression
+checks that all finite points remain visible. Earlier logs and the report retain
+their dated 27-test snapshot; the latest suite has 28 tests (the original
+18 October suite had 16).
