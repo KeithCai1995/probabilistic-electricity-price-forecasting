@@ -13,11 +13,10 @@ def conformity_scores(y: np.ndarray, lower: np.ndarray, upper: np.ndarray) -> np
 
 
 def finite_sample_quantile(scores: np.ndarray, miscoverage: float) -> float:
-    """Return the conformal rank k=ceil((n+1)(1-alpha)), with 1-based k.
+    """Return the score at rank ceil((n+1)(1-alpha)), using 1-based ranks.
 
-    The extra (n+1)st score is +infinity. This is the standard finite-sample
-    correction under exchangeable scores; it is not a guarantee under arbitrary
-    time dependence. Invalid/nonfinite scores are rejected rather than dropped.
+    The extra (n+1)st score is +infinity. Scores must be finite and alpha must
+    lie in (0, 1). The finite-sample interpretation assumes exchangeable scores.
     """
 
     scores = np.asarray(scores, dtype=float)
@@ -30,8 +29,7 @@ def finite_sample_quantile(scores: np.ndarray, miscoverage: float) -> float:
     alpha = float(miscoverage)
     if not np.isfinite(alpha) or not 0.0 < alpha < 1.0:
         raise ValueError("miscoverage must be a finite scalar strictly between 0 and 1")
-    # Decimal text semantics prevent .7 at n=9 becoming ceil(3.0000000000000004).
-    # Adjacent representable alpha values still remain on their respective sides.
+    # Keep .7 at n=9 on rank 3 while preserving adjacent-float boundaries.
     rank = int((Decimal(scores.size + 1) * (Decimal(1) - Decimal(str(alpha)))).to_integral_value(rounding=ROUND_CEILING))
     if rank > scores.size:
         return float("inf")
@@ -60,10 +58,9 @@ def groupwise_static_cqr(
     group_col: str,
     miscoverage: float,
 ) -> tuple[np.ndarray, np.ndarray, dict[int, float]]:
-    """Apply one fixed CQR correction within each forecast group.
+    """Apply a fixed CQR correction per group, here the forecast horizon.
 
-    For this portfolio the group is the forecast horizon. This comparator separates
-    the effect of horizon-specific calibration from the effect of online adaptation.
+    This is the horizon-specific static comparator for adaptive_cqr.
     """
 
     lower_out = np.empty(len(test), dtype=float)
@@ -99,14 +96,12 @@ def adaptive_cqr(
     gamma: float,
     window_per_horizon: int,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Online, horizon-specific adaptive CQR with no use of future test outcomes.
+    """Calibrate each horizon online with a trailing buffer of past scores.
 
-    The local miscoverage rate uses an ACI-inspired update with clipping to
-    [0.01, 0.99], and a trailing score buffer. Clipping changes the usual ACI
-    recursion, so its unmodified telescoping guarantees cannot be claimed here.
-    In particular, a small buffer can require an infinite conformal bound.
-    This empirical wrapper is not a coverage theorem for arbitrary dependent
-    time series. Each horizon updates only after its earlier outcome is observed.
+    Form the interval before the current outcome updates its horizon. The
+    ACI-inspired alpha update is clipped to [0.01, 0.99], so the recursion
+    differs from the original method. Small buffers can produce infinite
+    bounds. See README for the time-series and outcome-availability assumptions.
     """
 
     buffers: dict[int, deque[float]] = defaultdict(lambda: deque(maxlen=window_per_horizon))

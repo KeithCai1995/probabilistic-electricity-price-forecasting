@@ -1,4 +1,4 @@
-"""Protect reference artifacts when creating a new experiment output directory."""
+"""Create experiment folders without overwriting source or reference results."""
 from __future__ import annotations
 
 import json
@@ -9,11 +9,11 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 
 
 def prepare_output_root(root: str | Path, *, overwrite: bool = False) -> Path:
-    """Create a run directory, refusing nonempty targets unless explicitly allowed.
+    """Create a dedicated run directory.
 
-    Overwrite means replacing run-owned outputs in that directory, not deleting
-    arbitrary files. Repository roots, source folders and preserved reference
-    evidence remain protected even when overwrite=True.
+    A nonempty folder needs overwrite=True and a P1 marker or manifest.
+    Repository, source and reference folders stay protected; replacing run
+    outputs does not remove unrelated files.
     """
     target = Path(root).resolve()
     repository = REPOSITORY_ROOT.resolve()
